@@ -69,7 +69,7 @@ Prefira componentes Astro e funções pequenas com responsabilidades claras. Adi
 - Títulos usam esta ordem: propriedade `title`, primeiro `# Título` no início do corpo, nome do arquivo.
 - `title`, `description`, `date`, `updatedDate`, `category` e `tags` são opcionais. Datas preenchidas precisam ser válidas; não invente datas de publicação quando estiverem ausentes.
 - `category` pode permanecer como metadado, mas a organização visual vem das pastas.
-- A árvore usa ordenação natural em `pt-BR`, destaca a nota atual e abre seus diretórios ancestrais. Pastas contendo apenas anexos não geram grupos vazios de notas.
+- A árvore usa ordenação natural em `pt-BR`, inicia as pastas fechadas e destaca a nota atual quando sua pasta é expandida. Pastas contendo apenas anexos não geram grupos vazios de notas.
 - Todas as notas carregadas são publicadas. Não há filtro de rascunhos: `draft: true` não esconde conteúdo.
 - Pastas ocultas, como `.obsidian` e `.trash`, ficam fora do conteúdo publicado. Preserve as exclusões e não exponha configurações locais do vault.
 - Um vault copiado pode trazer seu próprio `.git`. Preserve a exclusão `src/content/notes/**/.git/` no `.gitignore`: sem ela, o Git pode registrar o conteúdo como um repositório aninhado em vez de adicionar os arquivos Markdown ao site.

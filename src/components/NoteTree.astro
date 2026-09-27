@@ -6,7 +6,7 @@ const { tree, currentId = '' } = Astro.props;
 <ul class="tree-list">
   {tree.folders.map(folder => (
     <li>
-      <details open={currentId.startsWith(`${folder.path}/`) || !currentId}>
+      <details>
         <summary>{folder.name}</summary>
         <Astro.self tree={folder} currentId={currentId} />
       </details>
