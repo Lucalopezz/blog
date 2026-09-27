@@ -1,0 +1,25 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import NoteCard from '../../components/NoteCard.astro';
+import { noteFolder, noteTitle } from '../../lib/notes';
+const notes = (await getCollection('notes')).sort((a, b) => noteTitle(a).localeCompare(noteTitle(b), 'pt-BR', { numeric: true }));
+const folders = [...new Set(notes.map(noteFolder))].sort((a, b) => a.localeCompare(b, 'pt-BR', { numeric: true }));
+---
+<BaseLayout title="Notas" description="Anotações de estudo organizadas por pastas e assuntos.">
+  <header class="page-intro">
+    <p class="eyebrow">Base de conhecimento</p>
+    <h1>Notas de estudo</h1>
+    <p class="lead">Conceitos, exemplos e descobertas para consultar de novo.</p>
+    <p class="muted">{notes.length} {notes.length === 1 ? 'nota disponível' : 'notas disponíveis'}</p>
+  </header>
+  {folders.map(folder => (
+    <section class="category-section">
+      <h2>{folder.replaceAll('/', ' / ')}</h2>
+      <ul class="note-list">
+        {notes.filter(note => noteFolder(note) === folder).map(note => <li><NoteCard note={note} /></li>)}
+      </ul>
+    </section>
+  ))}
+  {notes.length === 0 && <p>Nenhuma nota por aqui ainda.</p>}
+</BaseLayout>

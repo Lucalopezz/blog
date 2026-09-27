@@ -1,0 +1,24 @@
+<script>
+  const diagrams = document.querySelectorAll<HTMLElement>('.mermaid-source');
+  if (diagrams.length) {
+    const { default: mermaid } = await import('mermaid');
+    mermaid.initialize({ startOnLoad: false, theme: 'dark', securityLevel: 'strict', suppressErrorRendering: true });
+    for (const [index, source] of Array.from(diagrams).entries()) {
+      try {
+        const { svg } = await mermaid.render(`note-diagram-${index}`, source.textContent || '');
+        const diagram = document.createElement('div');
+        diagram.className = 'mermaid-diagram';
+        diagram.innerHTML = svg;
+        const details = document.createElement('details');
+        const summary = document.createElement('summary');
+        summary.textContent = 'Ver código do diagrama';
+        details.append(summary);
+        source.replaceWith(diagram, details);
+        details.append(source);
+      } catch {
+        // Keep the original diagram source readable if its syntax is invalid.
+        source.setAttribute('aria-label', 'Código do diagrama (não foi possível renderizar)');
+      }
+    }
+  }
+</script>

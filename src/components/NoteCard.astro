@@ -1,0 +1,24 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { noteTitle, noteUrl } from '../lib/notes';
+
+interface Props {
+  note: CollectionEntry<'notes'>;
+}
+
+const { note } = Astro.props;
+---
+
+<article class="note-card">
+  <h3><a href={noteUrl(note.id)}>{noteTitle(note)}</a></h3>
+  {note.data.description && <p>{note.data.description}</p>}
+  {note.data.tags.length > 0 && <ul class="tags" aria-label="Tags">{note.data.tags.map(tag => <li>{tag}</li>)}</ul>}
+</article>
+
+<style>
+  .note-card { padding: 1.5rem; background: var(--surface); border: 1px solid var(--border); border-radius: 0.5rem; }
+  h3 { margin: 0; font-size: 1.2rem; }
+  h3 a { text-decoration: none; }
+  h3 a:hover { text-decoration: underline; }
+  p { margin-block: 0.6rem 1rem; color: var(--muted); }
+</style>

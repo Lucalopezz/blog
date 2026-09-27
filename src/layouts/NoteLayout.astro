@@ -1,0 +1,30 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import BaseLayout from './BaseLayout.astro';
+import MermaidDiagrams from '../components/MermaidDiagrams.astro';
+import { noteTitle, noteFolder } from '../lib/notes';
+interface Props { note: CollectionEntry<'notes'> }
+const { note } = Astro.props;
+const { description, date, updatedDate, tags } = note.data;
+const title = noteTitle(note);
+const formatDate = (value: Date) => value.toLocaleDateString('pt-BR', {
+  year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC',
+});
+---
+<BaseLayout title={title} description={description || `Anotações sobre ${title}.`} currentId={note.id}>
+  <a class="back-link" href="/notes/">← Todas as notas</a>
+  <article>
+    <header class="note-header">
+      <p class="eyebrow">{noteFolder(note).replaceAll('/', ' / ')}</p>
+      <h1>{title}</h1>
+      {description && <p class="lead">{description}</p>}
+      {(date || updatedDate) && <div class="note-dates">
+        {date && <span>Publicado em <time datetime={date.toISOString()}>{formatDate(date)}</time></span>}
+        {updatedDate && <span>Atualizado em <time datetime={updatedDate.toISOString()}>{formatDate(updatedDate)}</time></span>}
+      </div>}
+      {tags.length > 0 && <ul class="tags" aria-label="Tags">{tags.map(tag => <li>{tag}</li>)}</ul>}
+    </header>
+    <div class="prose"><slot /></div>
+    {note.body?.includes('```mermaid') && <MermaidDiagrams />}
+  </article>
+</BaseLayout>

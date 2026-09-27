@@ -22,3 +22,9 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# Local Obsidian settings and deleted notes
+**/.obsidian/
+**/.trash/
+# A copied Obsidian vault can contain its own Git metadata. Never publish it as a submodule.
+src/content/notes/**/.git/

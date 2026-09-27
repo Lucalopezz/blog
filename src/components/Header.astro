@@ -1,0 +1,20 @@
+---
+const pathname = Astro.url.pathname;
+---
+
+<header class="site-header">
+  <a class="site-name" href="/">Notas de estudo<span aria-hidden="true">.</span></a>
+  <nav aria-label="Navegação principal">
+    <a href="/" aria-current={pathname === '/' ? 'page' : undefined}>Início</a>
+    <a href="/notes/" aria-current={pathname.startsWith('/notes') ? 'page' : undefined}>Notas</a>
+  </nav>
+</header>
+
+<style>
+  .site-header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-block: 1.5rem; border-bottom: 1px solid var(--border); }
+  .site-name { color: var(--text); font-size: 1.15rem; font-weight: 700; text-decoration: none; }
+  .site-name span { color: var(--accent); }
+  nav { display: flex; gap: 1.5rem; }
+  nav a { color: var(--muted); text-decoration: none; }
+  nav a:hover, nav a[aria-current='page'] { color: var(--accent); text-decoration: underline; text-underline-offset: 0.4em; }
+</style>

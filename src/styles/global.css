@@ -1,0 +1,101 @@
+:root {
+  color-scheme: dark;
+  --background: #101418;
+  --surface: #171d23;
+  --text: #e7edf3;
+  --muted: #a4b0bb;
+  --accent: #85d9b2;
+  --border: #2c3741;
+  --code-background: #1c2730;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: var(--text);
+  background: var(--background);
+  line-height: 1.7;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; }
+a { color: var(--accent); text-underline-offset: 0.2em; }
+a:hover { text-decoration-thickness: 2px; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
+h1, h2, h3, h4 { line-height: 1.25; letter-spacing: -0.025em; }
+h1 { margin: 0 0 1.25rem; font-size: clamp(2rem, 5vw, 3rem); font-weight: 700; }
+h2 { font-size: 1.5rem; }
+p { margin-block: 0 1.25rem; }
+.site-shell { max-width: 80rem; padding-inline: 1.5rem; margin-inline: auto; }
+main { min-height: 70vh; padding-block: 3.5rem 5rem; overflow-wrap: anywhere; }
+.site-footer { border-top: 1px solid var(--border); padding-block: 1.5rem; color: var(--muted); font-size: 0.875rem; }
+.eyebrow { color: var(--accent); font-size: 0.75rem; font-weight: 650; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 1rem; }
+.lead { max-width: 65ch; font-size: 1.125rem; color: var(--muted); }
+.muted { color: var(--muted); font-size: 0.875rem; }
+.intro { padding-block: 1rem 2.5rem; }
+.button { display: inline-flex; align-items: center; gap: 1.5rem; padding: 0.65rem 1.1rem; border-radius: 0.35rem; color: #10241b; background: var(--accent); text-decoration: none; font-weight: 600; }
+.button:hover { text-decoration: underline; }
+.home-section { border-top: 1px solid var(--border); padding-top: 1.5rem; margin-top: 1.5rem; }
+.topics { display: grid; gap: 1.25rem; }
+.topics dt { font-weight: 600; }
+.topics dd { margin: 0.25rem 0 0; color: var(--muted); }
+.page-intro { margin-bottom: 2.5rem; }
+.category-section { margin-top: 2.5rem; }
+.note-list { list-style: none; padding: 0; display: grid; gap: 1rem; }
+.tags { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; padding: 0; margin: 0; }
+.tags li { border: 1px solid var(--border); border-radius: 0.25rem; padding: 0.1rem 0.5rem; font-size: 0.75rem; color: var(--muted); }
+.back-link { display: inline-block; margin-bottom: 2rem; font-size: 0.9rem; }
+.note-header { padding-bottom: 2rem; margin-bottom: 2rem; border-bottom: 1px solid var(--border); }
+.note-dates { display: flex; flex-wrap: wrap; gap: 0.25rem 1.5rem; margin-bottom: 1rem; font-size: 0.8rem; color: var(--muted); }
+
+/* Global selectors also reach HTML generated from Markdown. */
+.prose { max-width: 72ch; }
+.prose h2, .prose h3, .prose h4 { margin-top: 2.5rem; scroll-margin-top: 1.5rem; }
+.prose li + li { margin-top: 0.4rem; }
+code, pre { font-family: ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', monospace; }
+:not(pre) > code { background: var(--code-background); border-radius: 0.2rem; padding: 0.15rem 0.3rem; font-size: 0.875em; }
+.prose pre { overflow-x: auto; padding: 1.25rem; border: 1px solid var(--border); border-radius: 0.5rem; font-size: 0.875rem; line-height: 1.65; }
+.prose pre code { padding: 0; background: none; }
+.prose blockquote { margin-inline: 0; padding: 0.75rem 1.25rem; border-left: 3px solid var(--accent); background: var(--code-background); }
+.prose blockquote p:last-child { margin-bottom: 0; }
+.prose table { display: block; max-width: 100%; overflow-x: auto; border-collapse: collapse; margin-block: 1.5rem; font-size: 0.9rem; }
+.prose th, .prose td { border: 1px solid var(--border); padding: 0.65rem 0.9rem; text-align: left; }
+.prose th { background: var(--code-background); }
+.prose img { max-width: 100%; height: auto; }
+.prose hr { border: 0; border-top: 1px solid var(--border); margin-block: 2rem; }
+.skip-link { position: absolute; left: 1rem; top: -5rem; padding: 0.5rem 1rem; background: var(--surface); z-index: 1; }
+.skip-link:focus { top: 0.5rem; }
+
+@media (max-width: 480px) {
+  .site-shell { padding-inline: 1rem; }
+  main { padding-block: 2.5rem 3rem; }
+}
+
+/* Folder navigation uses native details elements: no client framework required. */
+.workspace { display: grid; grid-template-columns: 16rem minmax(0, 1fr); gap: 3.5rem; }
+.workspace main { min-width: 0; max-width: 52rem; width: 100%; }
+.notes-sidebar { padding-block: 2.5rem; min-width: 0; }
+.sidebar-panel { position: sticky; top: 1.5rem; max-height: calc(100vh - 3rem); overflow-y: auto; padding-right: 0.75rem; }
+.sidebar-panel > summary { font-weight: 650; margin-bottom: 1.25rem; cursor: pointer; }
+.sidebar-panel > summary span { margin-left: 0.5rem; }
+.all-notes { display: block; margin-bottom: 0.75rem; font-size: 0.9rem; }
+.tree-list { list-style: none; padding: 0; margin: 0; font-size: 0.875rem; }
+.tree-list .tree-list { margin-left: 0.55rem; padding-left: 0.75rem; border-left: 1px solid var(--border); }
+.tree-list summary { cursor: pointer; padding: 0.4rem; color: var(--text); overflow-wrap: anywhere; }
+.tree-list a { display: block; padding: 0.4rem 0.65rem; margin-block: 0.1rem; border-radius: 0.3rem; color: var(--muted); text-decoration: none; overflow-wrap: anywhere; }
+.tree-list a:hover, .tree-list a[aria-current='page'] { color: var(--accent); background: var(--code-background); }
+.tree-list a[aria-current='page'] { font-weight: 650; }
+.prose .note-original-title { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+@media (max-width: 800px) {
+  .workspace { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .notes-sidebar { padding-block: 1.5rem 0; }
+  .sidebar-panel { position: static; max-height: 18rem; padding: 1rem; border: 1px solid var(--border); border-radius: 0.5rem; background: var(--surface); }
+  .sidebar-panel > summary { margin-bottom: 0; }
+  .sidebar-panel[open] > summary { margin-bottom: 1rem; }
+}
+
+.mermaid-diagram { overflow-x: auto; padding: 1rem; margin-block: 1.5rem; border: 1px solid var(--border); border-radius: 0.5rem; background: var(--surface); }
+.mermaid-diagram svg { display: block; margin-inline: auto; }
+.prose details summary { cursor: pointer; color: var(--muted); }
+
+/* Keep the Obsidian callouts aligned with the site's reading styles. */
+.prose .callout { line-height: 1.7; mix-blend-mode: normal; border-left: 3px solid var(--rc-color-dark); }
+.prose .callout > .callout-title { color: var(--rc-color-dark); gap: 0.5rem; line-height: 1.5; }
+.prose .callout-content > :first-child { margin-top: 0.75rem; }
+.prose .callout-content > :last-child { margin-bottom: 0; }

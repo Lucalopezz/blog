@@ -1,0 +1,18 @@
+---
+import { noteTitle, noteUrl, type NoteTree } from '../lib/notes';
+interface Props { tree: NoteTree; currentId?: string }
+const { tree, currentId = '' } = Astro.props;
+---
+<ul class="tree-list">
+  {tree.folders.map(folder => (
+    <li>
+      <details open={currentId.startsWith(`${folder.path}/`) || !currentId}>
+        <summary>{folder.name}</summary>
+        <Astro.self tree={folder} currentId={currentId} />
+      </details>
+    </li>
+  ))}
+  {tree.notes.map(note => (
+    <li><a href={noteUrl(note.id)} aria-current={currentId === note.id ? 'page' : undefined}>{noteTitle(note)}</a></li>
+  ))}
+</ul>

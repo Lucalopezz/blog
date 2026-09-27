@@ -1,0 +1,41 @@
+---
+import Header from '../components/Header.astro';
+import NotesSidebar from '../components/NotesSidebar.astro';
+import 'rehype-callouts/theme/obsidian';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  currentId?: string;
+}
+
+const {
+  title,
+  currentId,
+  description = 'Anotações de engenharia de software, explicações e exemplos de código.',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="pt-BR" class="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title} | Notas de estudo</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Pular para o conteúdo</a>
+    <div class="site-shell">
+      <Header />
+      <div class="workspace">
+        <NotesSidebar currentId={currentId} />
+        <main id="main-content" tabindex="-1"><slot /></main>
+      </div>
+      <footer class="site-footer">Em construção. Escrevendo para aprender, compartilhando para ajudar.</footer>
+    </div>
+  </body>
+</html>

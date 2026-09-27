@@ -1,0 +1,17 @@
+---
+import { getCollection } from 'astro:content';
+import { buildNoteTree } from '../lib/notes';
+import NoteTree from './NoteTree.astro';
+interface Props { currentId?: string }
+const { currentId } = Astro.props;
+const notes = await getCollection('notes');
+---
+<aside class="notes-sidebar">
+  <details class="sidebar-panel" open>
+    <summary>Explorar notas <span class="muted">{notes.length}</span></summary>
+    <nav aria-label="Pastas e notas">
+      <a class="all-notes" href="/notes/">Todas as notas</a>
+      <NoteTree tree={buildNoteTree(notes)} currentId={currentId} />
+    </nav>
+  </details>
+</aside>

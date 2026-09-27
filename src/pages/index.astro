@@ -1,11 +1,26 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import BaseLayout from '../layouts/BaseLayout.astro';
 ---
-
-<Layout>
-	<Welcome />
-</Layout>
+<BaseLayout title="Início">
+  <section class="intro">
+    <p class="eyebrow">Minha base de conhecimento</p>
+    <h1>Aprendendo, uma nota de cada vez.</h1>
+    <p class="lead">Anotações de um estudante de engenharia de software e desenvolvedor.
+      Um espaço para organizar ideias, registrar exemplos e compartilhar o que aprendo.</p>
+    <a class="button" href="/notes/">Explorar notas <span aria-hidden="true">→</span></a>
+  </section>
+  <section class="home-section">
+    <h2>Um lugar para voltar</h2>
+    <p>As notas acompanham meus estudos e evoluem com meu entendimento.
+      Navegue pelas pastas no menu para encontrar cada assunto e suas anotações.</p>
+    <a href="/notes/go/arrays-vs-slices/">Ler sobre arrays e slices em Go →</a>
+  </section>
+  <section class="home-section">
+    <h2>O que estou estudando</h2>
+    <dl class="topics">
+      <div><dt>Linguagens e frameworks</dt><dd>Go, Java, Spring, PHP, Laravel, React, Next.js, NestJS e Rust.</dd></div>
+      <div><dt>Sistemas e infraestrutura</dt><dd>Docker, Linux, bancos de dados e redes.</dd></div>
+      <div><dt>Projeto de software</dt><dd>Análise orientada a objetos, arquitetura, DDD e fundamentos de engenharia.</dd></div>
+    </dl>
+  </section>
+</BaseLayout>
