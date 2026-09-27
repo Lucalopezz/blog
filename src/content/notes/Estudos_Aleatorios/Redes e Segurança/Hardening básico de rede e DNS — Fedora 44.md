@@ -1,3 +1,9 @@
+---
+title: "Hardening básico de rede e DNS — Fedora 44"
+description: "Configurações de segurança de rede e DNS em computadores Fedora e o motivo de cada ajuste."
+category: "Redes e Segurança"
+tags: [fedora, hardening, dns, redes]
+---
 
 
 > Documento consolidado das configurações de segurança aplicadas ao **PC Fedora Workstation** e ao **notebook Fedora KDE**.

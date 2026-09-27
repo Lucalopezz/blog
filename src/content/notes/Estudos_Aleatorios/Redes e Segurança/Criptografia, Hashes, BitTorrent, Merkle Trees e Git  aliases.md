@@ -1,5 +1,8 @@
 ---
-
+title: "Criptografia, hashes, BitTorrent, Merkle Trees e Git"
+description: "Conceitos de segurança e estruturas de hashes que conectam criptografia, BitTorrent e Git."
+category: "Redes e Segurança"
+tags: [criptografia, hashes, bittorrent, merkle-trees, git]
 ---
 
 

@@ -1,3 +1,9 @@
+---
+title: "Resumo — Domain-Driven Design (DDD)"
+description: "Introdução à modelagem de domínio, linguagem ubíqua e contextos delimitados."
+category: "APOO"
+tags: [apoo, ddd, modelagem-de-dominio, arquitetura-de-software]
+---
 # Resumo — Domain-Driven Design (DDD)
 
 ## 1. Visão geral do DDD

@@ -1,3 +1,9 @@
+---
+title: "Usuários, privilégios, roles e dicionário no Oracle"
+description: "Relação entre database, schema e usuário; concessão de privilégios, roles e dicionário de dados."
+category: "Banco de Dados II"
+tags: [oracle, usuarios, privilegios, roles]
+---
 
 # Database, Schema e Usuário
 

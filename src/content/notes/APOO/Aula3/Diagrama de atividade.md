@@ -1,3 +1,9 @@
+---
+title: "Diagrama de atividades na UML"
+description: "Representação de fluxos de trabalho, decisões e raias em diagramas de atividades."
+category: "APOO"
+tags: [apoo, uml, diagramas-de-atividades]
+---
 
 ## Definição
 

@@ -1,3 +1,9 @@
+---
+title: "Criação de tabelas no Oracle"
+description: "Sintaxe de CREATE TABLE, tipos de dados, valores padrão e restrições no Oracle."
+category: "Banco de Dados II"
+tags: [oracle, sql, tabelas, constraints]
+---
 
 
 # Criação de tabelas no Oracle

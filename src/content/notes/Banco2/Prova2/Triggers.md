@@ -1,3 +1,9 @@
+---
+title: "Triggers no Oracle"
+description: "Gatilhos executados por operações DML e diferenças entre BEFORE, AFTER e INSTEAD OF."
+category: "Banco de Dados II"
+tags: [oracle, plsql, triggers, dml]
+---
 
 # 1. O que é uma Trigger?
 

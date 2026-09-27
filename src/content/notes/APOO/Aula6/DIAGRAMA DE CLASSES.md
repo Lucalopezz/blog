@@ -1,3 +1,9 @@
+---
+title: "Aula 04 — Diagrama de Classes"
+description: "Classes, atributos, operações e relacionamentos na modelagem orientada a objetos."
+category: "APOO"
+tags: [apoo, uml, diagramas-de-classes, orientacao-a-objetos]
+---
 # Aula 04 — Diagrama de Classes
 
 ## 1. Contexto da aula

@@ -1,3 +1,9 @@
+---
+title: "PL/SQL, procedures e functions na prática"
+description: "Introdução ao PL/SQL com variáveis, blocos, procedures e functions no Oracle."
+category: "Banco de Dados II"
+tags: [oracle, plsql, procedures, functions]
+---
 
 # Aula 1 — Introdução ao PL/SQL
 

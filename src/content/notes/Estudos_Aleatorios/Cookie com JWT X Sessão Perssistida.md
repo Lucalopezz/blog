@@ -1,3 +1,9 @@
+---
+title: "JWT em cookie vs. sessão persistida"
+description: "Comparação entre autenticação com JWT em cookie e sessões armazenadas no servidor."
+category: "Autenticação"
+tags: [autenticacao, jwt, cookies, sessoes]
+---
 
 A diferença principal é **onde fica o estado da autenticação**.
 

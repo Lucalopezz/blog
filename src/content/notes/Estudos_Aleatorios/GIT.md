@@ -1,3 +1,9 @@
+---
+title: "Git: modelo mental e comandos essenciais"
+description: "Conceitos de repositório local, branches, remotos e comandos para trabalhar com Git."
+category: "Git"
+tags: [git, versionamento, branches, remotos]
+---
 
 # 1. Primeiro: o modelo mental que evita 80% da confusão
 

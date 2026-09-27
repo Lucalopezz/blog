@@ -1,3 +1,9 @@
+---
+title: "Revisão prática de SQL e Oracle"
+description: "Exemplos de comandos SQL, constraints, sequences e consultas para revisão de Banco de Dados II."
+category: "Banco de Dados II"
+tags: [oracle, sql, revisao, exercicios]
+---
 ```slq
   
 

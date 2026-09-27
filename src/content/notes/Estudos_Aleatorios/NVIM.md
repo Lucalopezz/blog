@@ -1,3 +1,9 @@
+---
+title: "Atalhos e navegação no LazyVim"
+description: "Referência rápida de atalhos para arquivos, edição e navegação no LazyVim."
+category: "Ferramentas"
+tags: [neovim, lazyvim, atalhos]
+---
 # LazyVim — Core
 
 > `<leader>` = `Space`

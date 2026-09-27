@@ -1,3 +1,9 @@
+---
+title: "SSH seguro entre PC e notebook Fedora na rede local"
+description: "Configuração de SSH por chave entre dois computadores Fedora na rede local."
+category: "Redes e Segurança"
+tags: [ssh, fedora, redes, seguranca]
+---
 ````markdown
 ---
 tags:

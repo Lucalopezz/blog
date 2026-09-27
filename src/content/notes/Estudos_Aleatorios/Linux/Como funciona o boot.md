@@ -14,6 +14,8 @@ tags:
 source: "Transcrição fornecida pelo usuário"
 reviewed: 2026-08-29
 status: revisado
+description: "Da inicialização UEFI ao systemd: kernel, initramfs, sistemas de arquivos e pontos de montagem no Linux."
+category: "Linux"
 ---
 
 # Como o Linux faz boot

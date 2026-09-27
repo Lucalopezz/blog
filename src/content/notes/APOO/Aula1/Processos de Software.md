@@ -15,6 +15,8 @@ instituicao: "IFSP - Câmpus São Carlos"
 disciplina: "Análise e Projeto Orientado a Objetos"
 tipo: aula
 status: estudado
+description: "Modelos de processo de software, desenvolvimento iterativo, análise, projeto e requisitos."
+category: "APOO"
 ---
 
 # Aula 01 - Modelos de Processo e Requisitos de Software

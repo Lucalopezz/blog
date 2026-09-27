@@ -1,3 +1,9 @@
+---
+title: "Transações em bancos de dados"
+description: "Operações SQL como unidade de trabalho, com COMMIT, ROLLBACK e controle de transações."
+category: "Banco de Dados II"
+tags: [bancos-de-dados, sql, transacoes, oracle]
+---
 
 
 # Transação

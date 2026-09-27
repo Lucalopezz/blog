@@ -1,3 +1,9 @@
+---
+title: "Diagrama de comunicação e GRASP"
+description: "Colaboração entre objetos, mensagens e atribuição de responsabilidades com GRASP."
+category: "APOO"
+tags: [apoo, uml, diagramas-de-comunicacao, grasp]
+---
 
 ## 1. Visão geral da aula
 

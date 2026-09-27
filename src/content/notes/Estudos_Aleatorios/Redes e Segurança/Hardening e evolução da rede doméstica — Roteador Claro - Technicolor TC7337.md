@@ -1,3 +1,9 @@
+---
+title: "Hardening e evolução da rede doméstica — Roteador Claro - Technicolor TC7337"
+description: "Ajustes de segurança e organização da rede doméstica com um roteador Technicolor TC7337."
+category: "Redes e Segurança"
+tags: [redes, roteadores, hardening, rede-domestica]
+---
 
 ## 1. Objetivo
 

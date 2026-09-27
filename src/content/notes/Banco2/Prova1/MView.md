@@ -1,3 +1,9 @@
+---
+title: "Materialized Views no Oracle"
+description: "Diferenças entre views e materialized views, armazenamento dos resultados e atualização."
+category: "Banco de Dados II"
+tags: [oracle, sql, materialized-views]
+---
 
 ## O que é uma Materialized View?
 

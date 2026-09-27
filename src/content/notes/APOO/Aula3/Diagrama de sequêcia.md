@@ -1,3 +1,9 @@
+---
+title: "Diagrama de sequência na UML"
+description: "Mensagens entre participantes de uma interação e sua ordem ao longo do tempo."
+category: "APOO"
+tags: [apoo, uml, diagramas-de-sequencia]
+---
 
 ## Definição
 
