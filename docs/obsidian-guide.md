@@ -58,6 +58,8 @@ src/content/notes/
 
 O menu mostra APOO e suas aulas como pastas expansíveis. A nota aberta fica destacada. A pasta Imagens serve os anexos e não aparece como um grupo de notas vazio.
 
+As pastas começam fechadas no primeiro acesso. Ao abrir ou fechar pastas, navegar para outra nota ou atualizar a página, o menu mantém suas escolhas e a posição de rolagem durante a sessão da aba. Isso também inclui o estado aberto ou recolhido de “Explorar notas” no celular. A persistência usa `sessionStorage`; se JavaScript ou o armazenamento estiverem bloqueados, a navegação continua funcionando, mas o estado não é mantido entre páginas.
+
 O arquivo `APOO/Aula8/DDD.md` vira `/notes/APOO/Aula8/DDD/`. Espaços e acentos são preservados e codificados nos links automaticamente. Maiúsculas e minúsculas importam: renomear arquivos ou pastas muda os endereços publicados.
 
 No celular, o menu aparece acima do conteúdo e pode ser recolhido em “Explorar notas”. O tema é escuro por padrão.

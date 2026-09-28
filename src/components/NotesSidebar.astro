@@ -15,3 +15,49 @@ const notes = await getCollection('notes');
     </nav>
   </details>
 </aside>
+
+<script is:inline>
+  (() => {
+    const panel = document.querySelector('.sidebar-panel');
+    if (!panel) return;
+
+    const folders = [...panel.querySelectorAll('details[data-folder-path]')];
+    const storageKey = 'notes-sidebar:v1';
+
+    try {
+      const saved = JSON.parse(sessionStorage.getItem(storageKey) || 'null');
+      if (
+        saved && typeof saved.panelOpen === 'boolean' &&
+        Array.isArray(saved.openFolders) &&
+        saved.openFolders.every(path => typeof path === 'string') &&
+        Number.isFinite(saved.scrollTop) && saved.scrollTop >= 0
+      ) {
+        const openFolders = new Set(saved.openFolders);
+        panel.open = saved.panelOpen;
+        for (const folder of folders) {
+          folder.open = openFolders.has(folder.dataset.folderPath);
+        }
+        // Restaura a rolagem depois de expandir as pastas, com sua altura final.
+        panel.scrollTop = saved.scrollTop;
+      }
+    } catch {
+      // Dados inválidos ou armazenamento bloqueado mantêm o HTML padrão.
+    }
+
+    function saveState() {
+      try {
+        sessionStorage.setItem(storageKey, JSON.stringify({
+          panelOpen: panel.open,
+          openFolders: folders.filter(folder => folder.open).map(folder => folder.dataset.folderPath),
+          scrollTop: panel.scrollTop,
+        }));
+      } catch {
+        // O menu nativo continua funcionando sem acesso ao armazenamento.
+      }
+    }
+
+    // O evento toggle não propaga; a captura inclui as subpastas.
+    panel.addEventListener('toggle', saveState, true);
+    window.addEventListener('pagehide', saveState);
+  })();
+</script>

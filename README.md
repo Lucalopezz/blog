@@ -19,6 +19,8 @@ src/content/notes/
 
 Cada `.md` vira uma página; pastas e subpastas viram grupos expansíveis no menu. Não precisa renomear arquivos com espaços ou acentos, cadastrar páginas ou adicionar frontmatter. Copie pastas de assuntos do vault, não a raiz completa, para evitar trazer metadados pessoais ou um repositório Git aninhado.
 
+As pastas começam fechadas no primeiro acesso. Durante a sessão da aba, o menu preserva as pastas abertas, seu estado recolhido ou expandido e sua posição de rolagem ao navegar entre notas ou recarregar a página.
+
 A pasta APOO deste projeto foi copiada do seu vault para testar 8 notas e 35 imagens reais. O vault original não é alterado pelo site.
 
 **[Guia de uso com Obsidian e Vercel](docs/obsidian-guide.md)** — copiar notas, atualizar, usar links e configurar publicação.
@@ -63,7 +65,7 @@ pnpm preview
 
 A coleção lê Markdown recursivamente. `getStaticPaths()` gera as páginas, e `render()` transforma as notas em HTML. O menu vem da mesma coleção, portanto acompanha arquivos novos, renomeados e removidos.
 
-Sem backend, banco de dados ou React. O menu usa HTML nativo; os diagramas Mermaid usam JavaScript no navegador, carregado quando há diagramas. Os arquivos finais ficam em `dist/`.
+Sem backend, banco de dados ou React. O menu usa HTML nativo com um pequeno script para lembrar seu estado na sessão da aba; sem JavaScript ou com armazenamento bloqueado, continua navegável, mas não mantém esse estado entre páginas. Os diagramas Mermaid usam JavaScript no navegador, carregado quando há diagramas. Os arquivos finais ficam em `dist/`.
 
 ## Metadados opcionais
 

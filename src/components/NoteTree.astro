@@ -6,7 +6,7 @@ const { tree, currentId = '' } = Astro.props;
 <ul class="tree-list">
   {tree.folders.map(folder => (
     <li>
-      <details>
+      <details data-folder-path={folder.path}>
         <summary>{folder.name}</summary>
         <Astro.self tree={folder} currentId={currentId} />
       </details>
