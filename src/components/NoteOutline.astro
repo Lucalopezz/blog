@@ -1,0 +1,163 @@
+---
+import type { MarkdownHeading } from 'astro';
+interface Props { headings: MarkdownHeading[] }
+// Um título Markdown vazio pode gerar um slug vazio; ele não tem destino navegável.
+const headings = Astro.props.headings.filter(heading => heading.slug);
+const baseDepth = Math.min(...headings.map(heading => heading.depth), 6);
+---
+
+<aside class="note-outline" aria-label="Navegação nesta nota">
+  <details class="outline-panel" open>
+    <summary title="Abrir ou recolher o índice desta nota">
+      <svg class="panel-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" /><path d="M15 4v16M6 9h6m-6 4h6m-6 4h4" /></svg>
+      <span class="panel-label">Nesta nota</span>
+      <span class="panel-chevron" aria-hidden="true">›</span>
+    </summary>
+    <div class="outline-body">
+      <div class="outline-search" hidden>
+        <label for="note-filter">Filtrar conteúdo</label>
+        <input id="note-filter" type="search" placeholder="Buscar nesta nota…" autocomplete="off" aria-describedby="note-filter-hint" />
+        <p id="note-filter-hint">Busca nos títulos e no texto das seções.</p>
+        <p class="outline-status" role="status" aria-live="polite" aria-atomic="true"></p>
+      </div>
+      <nav aria-label="Tópicos desta nota">
+        <ol class="outline-list">
+          <li><a href="#note:top" data-outline-id="note:top">Início da nota<span class="outline-snippet" hidden></span></a></li>
+          {headings.map(heading => (
+            <li style={`--outline-level: ${Math.max(0, heading.depth - baseDepth)}`}>
+              <a href={`#${heading.slug}`} data-outline-id={heading.slug}>{heading.text}<span class="outline-snippet" hidden></span></a>
+            </li>
+          ))}
+        </ol>
+      </nav>
+      <p class="outline-empty" hidden>Nenhuma seção encontrada.</p>
+    </div>
+  </details>
+</aside>
+
+<script is:inline>
+  (() => {
+    const panel = document.querySelector('.outline-panel');
+    if (!panel) return;
+    try {
+      const saved = localStorage.getItem('note-outline:open');
+      if (saved !== null) panel.open = saved !== 'false';
+    } catch {
+      // Sem armazenamento, o índice nativo segue disponível.
+    }
+    panel.addEventListener('toggle', () => {
+      try {
+        localStorage.setItem('note-outline:open', String(panel.open));
+      } catch {
+        // O índice continua recolhível quando o armazenamento está bloqueado.
+      }
+    });
+  })();
+</script>
+
+<script>
+  const panel = document.querySelector<HTMLDetailsElement>('.outline-panel');
+  const prose = document.querySelector<HTMLElement>('.prose');
+  const input = panel?.querySelector<HTMLInputElement>('#note-filter');
+
+  if (panel && prose && input) {
+    const normalize = (text: string) => text.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('pt-BR');
+    const links = [...panel.querySelectorAll<HTMLAnchorElement>('a[data-outline-id]')];
+    const sections = links.flatMap(link => {
+      const heading = document.getElementById(link.dataset.outlineId!);
+      return heading ? [{ link, heading, text: '', searchable: '' }] : [];
+    });
+    // Cada trecho termina no próximo título. Isso inclui código, tabelas e callouts,
+    // sem alterar o HTML da nota nem duplicar correspondências nos títulos pais.
+    for (const [index, section] of sections.entries()) {
+      const range = document.createRange();
+      range.setStartAfter(section.heading);
+      const next = sections[index + 1];
+      if (next) range.setEndBefore(next.heading);
+      else range.setEnd(prose, prose.childNodes.length);
+      section.text = range.toString().replace(/\s+/g, ' ').trim();
+      section.searchable = normalize(`${section.heading.textContent} ${section.text}`);
+    }
+
+    const status = panel.querySelector<HTMLElement>('.outline-status')!;
+    const empty = panel.querySelector<HTMLElement>('.outline-empty')!;
+    const navigation = panel.querySelector<HTMLElement>('nav')!;
+    panel.querySelector<HTMLElement>('.outline-search')!.hidden = false;
+
+    function filterSections() {
+      const query = normalize(input!.value.trim());
+      let count = 0;
+      for (const section of sections) {
+        const matches = !query || section.searchable.includes(query);
+        section.link.parentElement!.hidden = !matches;
+        if (matches) count++;
+        const snippet = section.link.querySelector<HTMLElement>('.outline-snippet')!;
+        const index = normalize(section.text).indexOf(query);
+        snippet.hidden = !query || !matches || index === -1 || normalize(section.heading.textContent || '').includes(query);
+        if (!snippet.hidden) {
+          const start = Math.max(0, index - 35);
+          snippet.textContent = `${start ? '…' : ''}${section.text.slice(start, index + query.length + 85)}…`;
+        }
+      }
+      empty.hidden = count !== 0;
+      status.textContent = query ? `${count} ${count === 1 ? 'seção encontrada' : 'seções encontradas'}.` : '';
+    }
+    input.addEventListener('input', filterSections);
+    input.addEventListener('keydown', event => {
+      if (event.key === 'Escape') {
+        input.value = '';
+        filterSections();
+      }
+    });
+
+    let current: HTMLAnchorElement | undefined;
+    let pending = false;
+    function updateCurrentSection() {
+      pending = false;
+      let active = sections[0];
+      const atEnd = window.scrollY > 0 && window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2;
+      for (const section of sections) {
+        // Títulos dentro de callouts recolhidos só entram na indicação ao ficarem visíveis.
+        if (section.heading.getClientRects().length && (atEnd || section.heading.getBoundingClientRect().top <= 100)) active = section;
+      }
+      if (active && active.link !== current) {
+        current?.removeAttribute('aria-current');
+        current = active.link;
+        current.setAttribute('aria-current', 'location');
+        // Mantém o tópico atual visível sem mover a rolagem da página.
+        if (panel!.open && !current.parentElement!.hidden && !panel!.contains(document.activeElement)) {
+          const rect = current.getBoundingClientRect();
+          const bounds = navigation.getBoundingClientRect();
+          if (rect.bottom > bounds.bottom) navigation.scrollTop += rect.bottom - bounds.bottom + 16;
+          else if (rect.top < bounds.top) navigation.scrollTop -= bounds.top - rect.top + 16;
+        }
+      }
+    }
+    function scheduleUpdate() {
+      if (!pending) {
+        pending = true;
+        requestAnimationFrame(updateCurrentSection);
+      }
+    }
+    for (const section of sections) {
+      section.link.addEventListener('click', () => {
+        let ancestor = section.heading.parentElement;
+        while (ancestor && ancestor !== prose) {
+          if (ancestor instanceof HTMLDetailsElement) ancestor.open = true;
+          ancestor = ancestor.parentElement;
+        }
+        section.heading.tabIndex = -1;
+        section.heading.focus({ preventScroll: true });
+        scheduleUpdate();
+      });
+    }
+    window.addEventListener('scroll', scheduleUpdate, { passive: true });
+    window.addEventListener('resize', scheduleUpdate);
+    window.addEventListener('hashchange', scheduleUpdate);
+    window.addEventListener('load', scheduleUpdate);
+    prose.addEventListener('toggle', scheduleUpdate, true);
+    panel.addEventListener('toggle', scheduleUpdate);
+    document.querySelector('.sidebar-panel')?.addEventListener('toggle', scheduleUpdate);
+    updateCurrentSection();
+  }
+</script>

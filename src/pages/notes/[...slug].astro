@@ -13,9 +13,12 @@ export const getStaticPaths = (async () => {
 
 type Props = InferGetStaticPropsType<typeof getStaticPaths>;
 const { note } = Astro.props;
-const { Content } = await render(note);
+const { Content, headings } = await render(note);
+// O primeiro H1 já aparece no cabeçalho; seu anchor original é preservado no corpo.
+const startsWithH1 = /^\s*(?:#(?:[ \t]+|\r?\n|$)|[^\n]+\n[ \t]*=+[ \t]*(?:\r?\n|$))/.test(note.body || '');
+const outlineHeadings = startsWithH1 ? headings.slice(1) : headings;
 ---
 
-<NoteLayout note={note}>
+<NoteLayout note={note} headings={outlineHeadings}>
   <Content />
 </NoteLayout>

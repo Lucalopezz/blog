@@ -8,7 +8,11 @@ const notes = await getCollection('notes');
 ---
 <aside class="notes-sidebar">
   <details class="sidebar-panel" open>
-    <summary>Explorar notas <span class="muted">{notes.length}</span></summary>
+    <summary title="Abrir ou recolher o explorador de notas">
+      <svg class="panel-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" /><path d="M9 4v16M5 9h2m-2 4h2m-2 4h2" /></svg>
+      <span class="panel-label">Explorar notas <span class="muted">{notes.length}</span></span>
+      <span class="panel-chevron" aria-hidden="true">‹</span>
+    </summary>
     <nav aria-label="Pastas e notas">
       <a class="all-notes" href="/notes/">Todas as notas</a>
       <NoteTree tree={buildNoteTree(notes)} currentId={currentId} />
@@ -23,6 +27,14 @@ const notes = await getCollection('notes');
 
     const folders = [...panel.querySelectorAll('details[data-folder-path]')];
     const storageKey = 'notes-sidebar:v1';
+    let savedOpen = null;
+
+    try {
+      savedOpen = localStorage.getItem('notes-explorer:open');
+      if (savedOpen !== null) panel.open = savedOpen !== 'false';
+    } catch {
+      // A preferência é opcional quando o armazenamento está bloqueado.
+    }
 
     try {
       const saved = JSON.parse(sessionStorage.getItem(storageKey) || 'null');
@@ -33,7 +45,7 @@ const notes = await getCollection('notes');
         Number.isFinite(saved.scrollTop) && saved.scrollTop >= 0
       ) {
         const openFolders = new Set(saved.openFolders);
-        panel.open = saved.panelOpen;
+        if (savedOpen === null) panel.open = saved.panelOpen;
         for (const folder of folders) {
           folder.open = openFolders.has(folder.dataset.folderPath);
         }
@@ -45,6 +57,11 @@ const notes = await getCollection('notes');
     }
 
     function saveState() {
+      try {
+        localStorage.setItem('notes-explorer:open', String(panel.open));
+      } catch {
+        // O menu nativo continua funcionando sem acesso ao armazenamento.
+      }
       try {
         sessionStorage.setItem(storageKey, JSON.stringify({
           panelOpen: panel.open,

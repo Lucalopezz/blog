@@ -58,11 +58,15 @@ src/content/notes/
 
 O menu mostra APOO e suas aulas como pastas expansíveis. A nota aberta fica destacada. A pasta Imagens serve os anexos e não aparece como um grupo de notas vazio.
 
-As pastas começam fechadas no primeiro acesso. Ao abrir ou fechar pastas, navegar para outra nota ou atualizar a página, o menu mantém suas escolhas e a posição de rolagem durante a sessão da aba. Isso também inclui o estado aberto ou recolhido de “Explorar notas” no celular. A persistência usa `sessionStorage`; se JavaScript ou o armazenamento estiverem bloqueados, a navegação continua funcionando, mas o estado não é mantido entre páginas.
+As pastas começam fechadas no primeiro acesso. Ao abrir ou fechar pastas, navegar para outra nota ou atualizar a página, o menu mantém suas escolhas e a posição de rolagem durante a sessão da aba (`sessionStorage`). Clique em “Explorar notas” para recolher a lateral e ampliar a área da nota no desktop; o ícone que permanece permite abri-la novamente.
+
+À direita, “Nesta nota” lista automaticamente os títulos do Markdown e destaca o tópico atual conforme você rola a página. Clique em um título para ir àquela seção. Use “Filtrar conteúdo” para buscar no texto ou nos títulos da nota aberta: a lista passa a mostrar as seções correspondentes e trechos do conteúdo, sem modificar o corpo da nota. A busca ignora diferenças de maiúsculas e acentos. Limpe o campo ou pressione `Esc` para voltar ao índice completo. Notas sem subtítulos continuam com o link “Início da nota” e a busca no seu conteúdo.
+
+O índice também pode ser recolhido para dar mais espaço ao conteúdo. A abertura das duas laterais é salva separadamente no navegador (`localStorage`), inclusive ao atualizar a página ou reabrir o site. Sem JavaScript, as laterais continuam recolhíveis e os links continuam navegáveis, mas o filtro e a indicação do tópico atual ficam desativados. Se o armazenamento estiver bloqueado, apenas a persistência fica indisponível.
 
 O arquivo `APOO/Aula8/DDD.md` vira `/notes/APOO/Aula8/DDD/`. Espaços e acentos são preservados e codificados nos links automaticamente. Maiúsculas e minúsculas importam: renomear arquivos ou pastas muda os endereços publicados.
 
-No celular, o menu aparece acima do conteúdo e pode ser recolhido em “Explorar notas”. O tema é escuro por padrão.
+Em telas menores, o índice aparece acima da nota; no celular, o explorador também vai para cima do conteúdo. Ambos podem ser recolhidos pelos seus títulos. O tema é escuro por padrão.
 
 ## Notas sem configuração
 

@@ -1,6 +1,8 @@
 ---
 import Header from '../components/Header.astro';
 import NotesSidebar from '../components/NotesSidebar.astro';
+import NoteOutline from '../components/NoteOutline.astro';
+import type { MarkdownHeading } from 'astro';
 import 'rehype-callouts/theme/obsidian';
 import '../styles/global.css';
 
@@ -8,11 +10,13 @@ interface Props {
   title: string;
   description?: string;
   currentId?: string;
+  headings?: MarkdownHeading[];
 }
 
 const {
   title,
   currentId,
+  headings,
   description = 'Anotações de engenharia de software, explicações e exemplos de código.',
 } = Astro.props;
 ---
@@ -31,8 +35,9 @@ const {
     <a class="skip-link" href="#main-content">Pular para o conteúdo</a>
     <div class="site-shell">
       <Header />
-      <div class="workspace">
+      <div class:list={['workspace', { 'workspace-note': headings !== undefined }]}>
         <NotesSidebar currentId={currentId} />
+        {headings !== undefined && <NoteOutline headings={headings} />}
         <main id="main-content" tabindex="-1"><slot /></main>
       </div>
       <footer class="site-footer">Em construção. Escrevendo para aprender, compartilhando para ajudar.</footer>

@@ -3,20 +3,21 @@ import type { CollectionEntry } from 'astro:content';
 import BaseLayout from './BaseLayout.astro';
 import MermaidDiagrams from '../components/MermaidDiagrams.astro';
 import { noteTitle, noteFolder } from '../lib/notes';
-interface Props { note: CollectionEntry<'notes'> }
-const { note } = Astro.props;
+import type { MarkdownHeading } from 'astro';
+interface Props { note: CollectionEntry<'notes'>; headings: MarkdownHeading[] }
+const { note, headings } = Astro.props;
 const { description, date, updatedDate, tags } = note.data;
 const title = noteTitle(note);
 const formatDate = (value: Date) => value.toLocaleDateString('pt-BR', {
   year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC',
 });
 ---
-<BaseLayout title={title} description={description || `Anotações sobre ${title}.`} currentId={note.id}>
+<BaseLayout title={title} description={description || `Anotações sobre ${title}.`} currentId={note.id} headings={headings}>
   <a class="back-link" href="/notes/">← Todas as notas</a>
   <article>
     <header class="note-header">
       <p class="eyebrow">{noteFolder(note).replaceAll('/', ' / ')}</p>
-      <h1>{title}</h1>
+      <h1 id="note:top">{title}</h1>
       {description && <p class="lead">{description}</p>}
       {(date || updatedDate) && <div class="note-dates">
         {date && <span>Publicado em <time datetime={date.toISOString()}>{formatDate(date)}</time></span>}
