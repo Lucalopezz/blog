@@ -1,24 +1,167 @@
+<dialog id="mermaid-dialog" class="mermaid-dialog" aria-labelledby="mermaid-dialog-title" aria-describedby="mermaid-dialog-hint">
+  <div class="mermaid-dialog-header">
+    <p id="mermaid-dialog-title">Diagrama ampliado</p>
+    <button type="button" class="mermaid-control" data-diagram-close autofocus>Fechar</button>
+  </div>
+  <div class="mermaid-zoom-controls" role="group" aria-label="Escala do diagrama">
+    <button type="button" class="mermaid-control" data-diagram-zoom-out aria-label="Diminuir diagrama">−</button>
+    <output class="mermaid-zoom-value" aria-label="Zoom" aria-live="polite" aria-atomic="true">100%</output>
+    <button type="button" class="mermaid-control" data-diagram-zoom-in aria-label="Aumentar diagrama">+</button>
+    <button type="button" class="mermaid-control" data-diagram-original>Tamanho original</button>
+    <button type="button" class="mermaid-control" data-diagram-fit>Ajustar à largura</button>
+  </div>
+  <div class="mermaid-viewport mermaid-dialog-viewport" tabindex="0" role="region" aria-label="Diagrama ampliado, com rolagem"></div>
+  <p id="mermaid-dialog-hint" class="mermaid-hint">Use a rolagem para explorar o diagrama. Pressione Esc para fechar.</p>
+</dialog>
+
 <script>
+  const dialog = document.querySelector<HTMLDialogElement>('#mermaid-dialog')!;
+  const expandedViewport = dialog.querySelector<HTMLElement>('.mermaid-dialog-viewport')!;
+  const zoomValue = dialog.querySelector<HTMLOutputElement>('.mermaid-zoom-value')!;
+  const zoomIn = dialog.querySelector<HTMLButtonElement>('[data-diagram-zoom-in]')!;
+  const zoomOut = dialog.querySelector<HTMLButtonElement>('[data-diagram-zoom-out]')!;
+  const dialogTitle = dialog.querySelector<HTMLElement>('#mermaid-dialog-title')!;
+
+  let active: {
+    svg: SVGSVGElement;
+    viewport: HTMLElement;
+    button: HTMLButtonElement;
+    width: number;
+    height: number;
+    viewportHeight: string;
+    scrollLeft: number;
+    scrollTop: number;
+  } | undefined;
+  let scale = 1;
+  let fitToWidth = false;
+
+  function availableWidth() {
+    const styles = getComputedStyle(expandedViewport);
+    return Math.max(1, expandedViewport.clientWidth - parseFloat(styles.paddingLeft) - parseFloat(styles.paddingRight));
+  }
+
+  function setScale(next: number) {
+    if (!active) return;
+    const fitScale = availableWidth() / active.width;
+    const minimum = Math.min(0.1, fitScale);
+    const maximum = Math.max(4, fitScale);
+    // Resize the SVG itself so scrollbars cover the entire enlarged diagram.
+    scale = Math.min(maximum, Math.max(minimum, next));
+    active.svg.style.width = `${active.width * scale}px`;
+    active.svg.style.height = `${active.height * scale}px`;
+    zoomValue.value = `${Math.round(scale * 100)}%`;
+    zoomOut.disabled = scale <= minimum;
+    zoomIn.disabled = scale >= maximum;
+  }
+
+  function openDiagram(svg: SVGSVGElement, viewport: HTMLElement, button: HTMLButtonElement, index: number) {
+    const { width, height } = svg.viewBox.baseVal;
+    active = {
+      svg, viewport, button, width, height,
+      viewportHeight: viewport.style.height,
+      scrollLeft: viewport.scrollLeft,
+      scrollTop: viewport.scrollTop,
+    };
+    // Move the original SVG: copying it would duplicate Mermaid's IDs and markers.
+    viewport.style.height = `${viewport.getBoundingClientRect().height}px`;
+    expandedViewport.append(svg);
+    dialogTitle.textContent = `Diagrama ${index + 1} ampliado`;
+    fitToWidth = false;
+    dialog.showModal();
+    setScale(Math.max(1, availableWidth() / width));
+    expandedViewport.scrollTo(0, 0);
+  }
+
+  dialog.querySelector<HTMLButtonElement>('[data-diagram-close]')!.addEventListener('click', () => dialog.close());
+  dialog.addEventListener('close', () => {
+    if (!active) return;
+    const { svg, viewport, button, width, viewportHeight, scrollLeft, scrollTop } = active;
+    svg.style.width = `${width}px`;
+    svg.style.height = 'auto';
+    viewport.append(svg);
+    viewport.style.height = viewportHeight;
+    viewport.scrollTo(scrollLeft, scrollTop);
+    active = undefined;
+    button.focus({ preventScroll: true });
+  });
+  zoomIn.addEventListener('click', () => {
+    fitToWidth = false;
+    setScale(scale * 1.25);
+  });
+  zoomOut.addEventListener('click', () => {
+    fitToWidth = false;
+    setScale(scale / 1.25);
+  });
+  dialog.querySelector<HTMLButtonElement>('[data-diagram-original]')!.addEventListener('click', () => {
+    fitToWidth = false;
+    setScale(1);
+  });
+  dialog.querySelector<HTMLButtonElement>('[data-diagram-fit]')!.addEventListener('click', () => {
+    if (!active) return;
+    fitToWidth = true;
+    setScale(availableWidth() / active.width);
+    expandedViewport.scrollTo(0, 0);
+  });
+  new ResizeObserver(() => {
+    if (active && dialog.open) setScale(fitToWidth ? availableWidth() / active.width : scale);
+  }).observe(expandedViewport);
+
   const diagrams = document.querySelectorAll<HTMLElement>('.mermaid-source');
   if (diagrams.length) {
-    const { default: mermaid } = await import('mermaid');
-    mermaid.initialize({ startOnLoad: false, theme: 'dark', securityLevel: 'strict', suppressErrorRendering: true });
-    for (const [index, source] of Array.from(diagrams).entries()) {
-      try {
-        const { svg } = await mermaid.render(`note-diagram-${index}`, source.textContent || '');
-        const diagram = document.createElement('div');
-        diagram.className = 'mermaid-diagram';
-        diagram.innerHTML = svg;
-        const details = document.createElement('details');
-        const summary = document.createElement('summary');
-        summary.textContent = 'Ver código do diagrama';
-        details.append(summary);
-        source.replaceWith(diagram, details);
-        details.append(source);
-      } catch {
-        // Keep the original diagram source readable if its syntax is invalid.
-        source.setAttribute('aria-label', 'Código do diagrama (não foi possível renderizar)');
+    try {
+      const { default: mermaid } = await import('mermaid');
+      mermaid.initialize({ startOnLoad: false, theme: 'dark', securityLevel: 'strict', suppressErrorRendering: true });
+      for (const [index, source] of Array.from(diagrams).entries()) {
+        try {
+          const { svg } = await mermaid.render(`note-diagram-${index}`, source.textContent || '');
+          const diagram = document.createElement('div');
+          diagram.className = 'mermaid-diagram';
+          const viewport = document.createElement('div');
+          viewport.className = 'mermaid-viewport';
+          viewport.tabIndex = 0;
+          viewport.setAttribute('role', 'region');
+          viewport.setAttribute('aria-label', `Diagrama ${index + 1}, com rolagem`);
+          viewport.innerHTML = svg;
+          const rendered = viewport.querySelector<SVGSVGElement>('svg');
+          if (!rendered || !Number.isFinite(rendered.viewBox.baseVal.width) || rendered.viewBox.baseVal.width <= 0
+            || !Number.isFinite(rendered.viewBox.baseVal.height) || rendered.viewBox.baseVal.height <= 0) {
+            throw new Error('O diagrama não tem dimensões válidas.');
+          }
+          // Mermaid may emit width="100%" and an inline max-width; keep its natural
+          // dimensions instead of shrinking wide diagrams into the text column.
+          rendered.style.maxWidth = 'none';
+          rendered.style.width = `${rendered.viewBox.baseVal.width}px`;
+          rendered.style.height = 'auto';
+
+          const toolbar = document.createElement('div');
+          toolbar.className = 'mermaid-toolbar';
+          const label = document.createElement('span');
+          label.textContent = `Diagrama ${index + 1}`;
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.className = 'mermaid-control';
+          button.textContent = 'Ampliar diagrama';
+          button.setAttribute('aria-label', `Ampliar diagrama ${index + 1}`);
+          button.setAttribute('aria-haspopup', 'dialog');
+          button.setAttribute('aria-controls', dialog.id);
+          button.addEventListener('click', () => openDiagram(rendered, viewport, button, index));
+          toolbar.append(label, button);
+          diagram.append(toolbar, viewport);
+
+          const details = document.createElement('details');
+          const summary = document.createElement('summary');
+          summary.textContent = 'Ver código do diagrama';
+          details.append(summary);
+          source.replaceWith(diagram, details);
+          details.append(source);
+        } catch {
+          // Keep the original diagram source readable if its syntax is invalid.
+          source.setAttribute('aria-label', 'Código do diagrama (não foi possível renderizar)');
+        }
       }
+    } catch {
+      // Loading Mermaid can also fail; all original code remains in the page.
+      for (const source of diagrams) source.setAttribute('aria-label', 'Código do diagrama (não foi possível carregar)');
     }
   }
 </script>

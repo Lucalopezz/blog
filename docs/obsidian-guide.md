@@ -120,6 +120,10 @@ Imagens PNG, JPEG, GIF, WebP, AVIF e SVG são publicadas automaticamente, junto 
 
 Blocos de código têm realce de sintaxe. Blocos com linguagem `mermaid` são renderizados como diagramas no navegador, no tema escuro, com opção para consultar seu código. Se a sintaxe do diagrama for inválida, seu código continua visível.
 
+Os diagramas ocupam toda a largura disponível na coluna da nota. Diagramas largos mantêm sua escala original e permitem rolagem horizontal dentro do bloco, inclusive no celular. Diagramas menores se ampliam para aproveitar a largura do bloco. Em telas de até 1400 pixels, o índice “Nesta nota” fica acima do conteúdo para liberar espaço.
+
+Clique em “Ampliar diagrama” para abrir uma visualização que ocupa quase toda a tela. Use `+` e `−` para ajustar o zoom, “Tamanho original” para voltar a 100% e “Ajustar à largura” para ver toda a extensão horizontal de uma vez. Role dentro dessa visualização para explorar as partes que ultrapassam a área visível. Pressione `Esc` ou clique em “Fechar” para voltar à nota; o foco retorna ao botão que abriu o diagrama. O ajuste é automático e não exige mudanças nos blocos Mermaid do Obsidian.
+
 Este site não executa plugins do Obsidian. Dataview, Canvas, fórmulas matemáticas, backlinks automáticos e referências a blocos `#^id` ainda não têm suporte especial. `![[Outra nota]]` vira um link, sem transcluir o conteúdo. Callouts como `[!warning]`, `[!note]`, `[!tip]` e `[!danger]` são renderizados com ícones e cores no tema escuro. Os modificadores `[!note]-` e `[!note]+` criam blocos recolhíveis. `==destaques==` ainda usa a apresentação básica do Markdown. Comentários `%%...%%` não são ocultados: remova-os das notas que for publicar.
 
 ## Conferir no computador

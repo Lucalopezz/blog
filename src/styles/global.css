@@ -45,7 +45,8 @@ main { min-height: 70vh; padding-block: 3.5rem 5rem; overflow-wrap: anywhere; }
 .note-dates { display: flex; flex-wrap: wrap; gap: 0.25rem 1.5rem; margin-bottom: 1rem; font-size: 0.8rem; color: var(--muted); }
 
 /* Global selectors also reach HTML generated from Markdown. */
-.prose { max-width: 90ch; }
+.prose { min-width: 0; }
+.prose > :not(.mermaid-diagram) { max-width: min(100%, 90ch); }
 .prose :is(h1, h2, h3, h4, h5, h6) { margin-top: 2.5rem; scroll-margin-top: 1.5rem; }
 .note-header h1 { scroll-margin-top: 1.5rem; }
 .prose li + li { margin-top: 0.4rem; }
@@ -114,7 +115,7 @@ code, pre { font-family: ui-monospace, SFMono-Regular, Consolas, 'Liberation Mon
 .tree-list a:hover, .tree-list a[aria-current='page'] { color: var(--accent); background: var(--code-background); }
 .tree-list a[aria-current='page'] { font-weight: 650; }
 .prose .note-original-title { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
-@media (max-width: 1150px) {
+@media (max-width: 1400px) {
   .workspace { grid-template-columns: var(--explorer-width) minmax(0, 1fr); }
   .workspace-note .notes-sidebar { grid-column: 1; grid-row: 1 / 3; }
   .workspace-note main { grid-column: 2; grid-row: 2; padding-top: 2rem; }
@@ -140,8 +141,28 @@ code, pre { font-family: ui-monospace, SFMono-Regular, Consolas, 'Liberation Mon
   .outline-body { max-height: 12rem; }
 }
 
-.mermaid-diagram { overflow-x: auto; padding: 1rem; margin-block: 1.5rem; border: 1px solid var(--border); border-radius: 0.5rem; background: var(--surface); }
-.mermaid-diagram svg { display: block; margin-inline: auto; }
+.mermaid-diagram { min-width: 0; max-width: 100%; margin-block: 1.5rem; border: 1px solid var(--border); border-radius: 0.5rem; background: var(--surface); }
+.mermaid-toolbar, .mermaid-dialog-header { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); }
+.mermaid-toolbar { color: var(--muted); font-size: 0.8rem; }
+.mermaid-control { min-height: 2.75rem; padding: 0.5rem 0.75rem; border: 1px solid var(--border); border-radius: 0.35rem; color: var(--text); background: var(--code-background); font: inherit; font-size: 0.875rem; cursor: pointer; }
+.mermaid-control:hover { border-color: var(--accent); color: var(--accent); }
+.mermaid-control:disabled { opacity: 0.45; cursor: default; }
+.mermaid-viewport { min-width: 0; overflow: auto; padding: 1rem; }
+.mermaid-viewport > svg { display: block; max-width: none; margin-inline: auto; }
+.mermaid-diagram .mermaid-viewport > svg { min-width: 100%; }
+.mermaid-dialog { width: 95vw; max-width: 95vw; height: 95dvh; max-height: 95dvh; padding: 0; border: 1px solid var(--border); border-radius: 0.5rem; color: var(--text); background: var(--surface); overflow: hidden; }
+.mermaid-dialog[open] { display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto; }
+.mermaid-dialog::backdrop { background: rgb(0 0 0 / 75%); }
+html:has(.mermaid-dialog[open]) { overflow: hidden; }
+.mermaid-dialog-header p { margin: 0; font-weight: 650; }
+.mermaid-zoom-controls { display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem; padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); }
+.mermaid-zoom-value { min-width: 4ch; color: var(--muted); font-size: 0.875rem; text-align: center; }
+.mermaid-dialog-viewport { min-height: 0; scrollbar-gutter: stable; overscroll-behavior: contain; }
+.mermaid-hint { margin: 0; padding: 0.75rem 1rem; border-top: 1px solid var(--border); color: var(--muted); font-size: 0.8rem; }
+@media (max-width: 480px) {
+  .mermaid-viewport { padding: 0.75rem; }
+  .mermaid-toolbar, .mermaid-dialog-header, .mermaid-zoom-controls, .mermaid-hint { padding: 0.75rem; }
+}
 .prose details summary { cursor: pointer; color: var(--muted); }
 
 /* Keep the Obsidian callouts aligned with the site's reading styles. */

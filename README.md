@@ -23,6 +23,8 @@ As pastas começam fechadas no primeiro acesso. Durante a sessão da aba, o menu
 
 Cada nota tem um índice automático de títulos à direita, com indicação do tópico atual durante a leitura. O campo “Filtrar conteúdo” busca nos títulos e no texto das seções da nota, sem diferenciar maiúsculas ou acentos, e mostra links e trechos dos resultados. O índice também pode ser recolhido. A preferência de abertura de cada lateral é salva no navegador (`localStorage`), inclusive depois de atualizar a página ou reabrir o site. Em telas menores, o índice fica acima da nota.
 
+Diagramas Mermaid aproveitam toda a largura da coluna central, com rolagem interna para manter os textos legíveis nos diagramas largos. “Ampliar diagrama” abre uma visualização que ocupa quase toda a tela, com zoom, tamanho original e ajuste à largura. Use “Fechar” ou `Esc` para voltar à nota. O código do diagrama continua disponível.
+
 A pasta APOO deste projeto foi copiada do seu vault para testar 8 notas e 35 imagens reais. O vault original não é alterado pelo site.
 
 **[Guia de uso com Obsidian e Vercel](docs/obsidian-guide.md)** — copiar notas, atualizar, usar links e configurar publicação.
