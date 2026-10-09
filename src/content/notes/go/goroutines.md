@@ -80,6 +80,8 @@ func main() {
 
 A ordem das mensagens pode variar. Para um fluxo contínuo de tarefas, um conjunto fixo de workers lendo de um canal costuma ser mais conveniente; há um exemplo em [[channels|Channels em Go]].
 
+Veja também [[fan-out-fan-in|Fan-Out e Fan-In em Go]] para distribuir tarefas entre workers, reunir seus canais de resultados e coordenar o encerramento.
+
 ## Cuidados
 
 - Não use `time.Sleep` para *esperar* uma goroutine: o tempo de execução é variável. Use `WaitGroup` ou um canal.

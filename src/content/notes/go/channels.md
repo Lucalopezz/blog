@@ -95,6 +95,8 @@ Este trecho usa `import "context"`. Se `results` puder ser fechado sem enviar, r
 
 Veja também [[goroutines|Goroutines em Go]] e [[race-condition-mutex-sync-map|race condition e mutex]].
 
+Para estudar a distribuição de tarefas e a reunião dos resultados em mais detalhes, veja [[fan-out-fan-in|Fan-Out e Fan-In em Go]], com explicação do fechamento por WaitGroup e um pipeline com cancelamento.
+
 ## Para continuar
 
 - [Effective Go: channels](https://go.dev/doc/effective_go#channels)
