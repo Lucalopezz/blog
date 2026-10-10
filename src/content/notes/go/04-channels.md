@@ -1,5 +1,5 @@
 ---
-title: Channels em Go
+title: "04. Channels em Go"
 description: Envie valores entre goroutines com um pool de workers e entenda bloqueio, fechamento e cancelamento.
 category: Go
 tags: [go, channels, concorrencia, workers]
@@ -93,9 +93,11 @@ Este trecho usa `import "context"`. Se `results` puder ser fechado sem enviar, r
 | Proteger estado compartilhado | `sync.Mutex` |
 | Cancelar uma operação | `context.Context` e `select` |
 
-Veja também [[goroutines|Goroutines em Go]] e [[race-condition-mutex-sync-map|race condition e mutex]].
+Veja também [[03-goroutines|Goroutines em Go]] e [[05-race-condition-mutex-sync-map|race condition e mutex]].
 
-Para estudar a distribuição de tarefas e a reunião dos resultados em mais detalhes, veja [[fan-out-fan-in|Fan-Out e Fan-In em Go]], com explicação do fechamento por WaitGroup e um pipeline com cancelamento.
+Para organizar o processamento em etapas, veja [[06-pipelines|Pipelines em Go]], com um exemplo de geração, cálculo de quadrados e filtragem.
+
+Para estudar a distribuição de tarefas e a reunião dos resultados em mais detalhes, veja [[07-fan-out-fan-in|Fan-Out e Fan-In em Go]], com explicação do fechamento por WaitGroup e um pipeline com cancelamento.
 
 ## Para continuar
 

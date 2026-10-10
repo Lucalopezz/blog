@@ -1,5 +1,5 @@
 ---
-title: Goroutines em Go
+title: "03. Goroutines em Go"
 description: Execute tarefas independentes, espere sua conclusão e limite o trabalho simultâneo com exemplos práticos.
 category: Go
 tags: [go, goroutines, concorrencia, waitgroup]
@@ -43,7 +43,7 @@ func main() {
 
 Execute com `go run main.go`. A ordem em que as tarefas **terminam** não é garantida; a impressão segue a ordem do slice. Passar `i` e `task` como argumentos também deixa explícito qual valor pertence a cada execução.
 
-`WaitGroup` serve para aguardar a conclusão. Ele não transporta resultados nem cancela tarefas. Para passar valores entre goroutines, veja [[channels|channels]].
+`WaitGroup` serve para aguardar a conclusão. Ele não transporta resultados nem cancela tarefas. Para passar valores entre goroutines, veja [[04-channels|channels]].
 
 ## Limitar tarefas simultâneas
 
@@ -78,15 +78,15 @@ func main() {
 }
 ```
 
-A ordem das mensagens pode variar. Para um fluxo contínuo de tarefas, um conjunto fixo de workers lendo de um canal costuma ser mais conveniente; há um exemplo em [[channels|Channels em Go]].
+A ordem das mensagens pode variar. Para um fluxo contínuo de tarefas, um conjunto fixo de workers lendo de um canal costuma ser mais conveniente; há um exemplo em [[04-channels|Channels em Go]].
 
-Veja também [[fan-out-fan-in|Fan-Out e Fan-In em Go]] para distribuir tarefas entre workers, reunir seus canais de resultados e coordenar o encerramento.
+Veja também [[07-fan-out-fan-in|Fan-Out e Fan-In em Go]] para distribuir tarefas entre workers, reunir seus canais de resultados e coordenar o encerramento.
 
 ## Cuidados
 
 - Não use `time.Sleep` para *esperar* uma goroutine: o tempo de execução é variável. Use `WaitGroup` ou um canal.
 - Uma goroutine bloqueada para sempre continua ocupando recursos. Defina como ela termina e como a operação pode ser cancelada.
-- Goroutines não tornam automaticamente seguro o acesso à mesma variável. Veja [[race-condition-mutex-sync-map|race condition, mutex e sync.Map]].
+- Goroutines não tornam automaticamente seguro o acesso à mesma variável. Veja [[05-race-condition-mutex-sync-map|race condition, mutex e sync.Map]].
 
 ## Para continuar
 

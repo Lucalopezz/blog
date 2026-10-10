@@ -14,7 +14,7 @@ src/content/notes/
 │   └── Imagens/
 │       └── Pasted image 20260803095808.png
 └── go/
-    └── arrays-vs-slices.md
+    └── 01-arrays-vs-slices.md
 ```
 
 Cada `.md` vira uma página; pastas e subpastas viram grupos expansíveis no menu. Não precisa renomear arquivos com espaços ou acentos, cadastrar páginas ou adicionar frontmatter. Copie pastas de assuntos do vault, não a raiz completa, para evitar trazer metadados pessoais ou um repositório Git aninhado.
@@ -28,6 +28,21 @@ Diagramas Mermaid aproveitam toda a largura da coluna central, com rolagem inter
 A pasta APOO deste projeto foi copiada do seu vault para testar 8 notas e 35 imagens reais. O vault original não é alterado pelo site.
 
 **[Guia de uso com Obsidian e Vercel](docs/obsidian-guide.md)** — copiar notas, atualizar, usar links e configurar publicação.
+
+## Ordem de leitura das notas de Go
+
+As notas de `go/` têm números nos arquivos e nos títulos para seguir esta sequência no menu:
+
+1. [Arrays vs Slices in Go](src/content/notes/go/01-arrays-vs-slices.md)
+2. [Concorrência e paralelismo em Go](src/content/notes/go/02-concorrencia-vs-paralelismo.md)
+3. [Goroutines em Go](src/content/notes/go/03-goroutines.md)
+4. [Channels em Go](src/content/notes/go/04-channels.md)
+5. [Race condition, mutex e sync.Map em Go](src/content/notes/go/05-race-condition-mutex-sync-map.md)
+6. [Pipelines em Go](src/content/notes/go/06-pipelines.md)
+7. [Fan-Out e Fan-In em Go](src/content/notes/go/07-fan-out-fan-in.md)
+8. [Estrutura de projetos em Go](src/content/notes/go/08-estrutura-de-projetos.md)
+
+A sequência começa por coleções e fundamentos de concorrência, passa pela comunicação e sincronização e chega aos padrões de processamento. A última nota aplica organização de pacotes e mutex em uma API de tarefas.
 
 ## Rodar localmente
 

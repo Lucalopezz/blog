@@ -1,5 +1,5 @@
 ---
-title: Race condition, mutex e sync.Map em Go
+title: "05. Race condition, mutex e sync.Map em Go"
 description: Identifique uma data race, proteja um map com mutex e saiba quando usar sync.Map.
 category: Go
 tags: [go, race-condition, mutex, sync-map]

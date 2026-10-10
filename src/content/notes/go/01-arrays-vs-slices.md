@@ -1,5 +1,5 @@
 ---
-title: Arrays vs Slices in Go
+title: "01. Arrays vs Slices in Go"
 description: Understand fixed-size arrays, flexible slices, and what happens when they share memory.
 date: 2026-09-26
 updatedDate: 2026-09-26

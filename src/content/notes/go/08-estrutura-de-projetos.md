@@ -1,5 +1,5 @@
 ---
-title: Estrutura de projetos em Go
+title: "08. Estrutura de projetos em Go"
 description: Organize um módulo pequeno e evolua para uma API de tarefas com cmd, internal e pacotes por responsabilidade.
 category: Go
 tags: [go, modulos, pacotes, estrutura-de-projetos]

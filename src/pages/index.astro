@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { noteUrl } from '../lib/notes';
 ---
 <BaseLayout title="Início">
   <section class="intro">
@@ -13,7 +14,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     <h2>Um lugar para voltar</h2>
     <p>As notas acompanham meus estudos e evoluem com meu entendimento.
       Navegue pelas pastas no menu para encontrar cada assunto e suas anotações.</p>
-    <a href="/notes/go/arrays-vs-slices/">Ler sobre arrays e slices em Go →</a>
+    <a href={noteUrl('go/01-arrays-vs-slices')}>Ler sobre arrays e slices em Go →</a>
   </section>
   <section class="home-section">
     <h2>O que estou estudando</h2>

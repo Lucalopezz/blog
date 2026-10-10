@@ -1,5 +1,5 @@
 ---
-title: Fan-Out e Fan-In em Go
+title: "07. Fan-Out e Fan-In em Go"
 description: Distribua tarefas entre goroutines, reúna canais de resultados e coordene fechamento e cancelamento sem deadlocks.
 category: Go
 tags: [go, concorrencia, channels, goroutines, fan-out, fan-in, waitgroup]
@@ -7,7 +7,7 @@ tags: [go, concorrencia, channels, goroutines, fan-out, fan-in, waitgroup]
 
 **Fan-Out** distribui trabalho entre vários workers. **Fan-In** reúne os resultados em um único fluxo. Em Go, esses padrões podem ser construídos com goroutines e channels: várias goroutines recebem tarefas de um canal, processam os valores e produzem resultados que o consumidor recebe por um canal final.
 
-Antes de avançar, vale revisar [[goroutines|Goroutines em Go]], [[channels|Channels em Go]] e [[concorrencia-vs-paralelismo|concorrência e paralelismo]].
+Antes de avançar, vale revisar [[03-goroutines|Goroutines em Go]], [[04-channels|Channels em Go]], [[02-concorrencia-vs-paralelismo|concorrência e paralelismo]] e [[06-pipelines|Pipelines em Go]].
 
 ## 1. Como os dois padrões se conectam
 
@@ -156,7 +156,7 @@ Uma execução possível seria:
 
 Essa divisão é apenas uma possibilidade. Não há garantia de rodízio, de quantidade igual de tarefas por worker ou de qual worker receberá um número específico. Um worker pode receber várias tarefas e outro nenhuma.
 
-Isso funciona bem quando as tarefas podem ser processadas de forma independente. Se os workers acessarem o mesmo map, slice ou objeto mutável, os canais não tornam esse acesso automaticamente seguro; veja [[race-condition-mutex-sync-map|race condition e sincronização]].
+Isso funciona bem quando as tarefas podem ser processadas de forma independente. Se os workers acessarem o mesmo map, slice ou objeto mutável, os canais não tornam esse acesso automaticamente seguro; veja [[05-race-condition-mutex-sync-map|race condition e sincronização]].
 
 Criar mais workers permite sobrepor tarefas. A execução simultânea de cálculos depende dos recursos disponíveis, e o ganho precisa ser medido. Para elevar ao quadrado seis números, o custo das goroutines e dos canais provavelmente supera qualquer benefício; o exemplo serve para estudar a coordenação.
 
@@ -427,7 +427,7 @@ Também não basta receber um contexto para interromper um cálculo longo ou uma
 
 ## 10. Worker pool, erros e escolha do padrão
 
-O conjunto fixo de workers é um **worker pool**. É possível dar a cada worker uma saída e juntá-las com `fanIn`, como fizemos, ou fazer todos enviarem diretamente para um canal compartilhado, como na nota de [[channels|Channels em Go]]. Na segunda opção, uma coordenadora ainda precisa esperar todos os remetentes antes de fechar a saída, mas não são necessárias goroutines extras para encaminhar resultados.
+O conjunto fixo de workers é um **worker pool**. É possível dar a cada worker uma saída e juntá-las com `fanIn`, como fizemos, ou fazer todos enviarem diretamente para um canal compartilhado, como na nota de [[04-channels|Channels em Go]]. Na segunda opção, uma coordenadora ainda precisa esperar todos os remetentes antes de fechar a saída, mas não são necessárias goroutines extras para encaminhar resultados.
 
 Para muitas tarefas, um pool limita o número de workers ativos. A quantidade adequada depende de tempo de espera, custo de CPU, memória e limites de serviços externos; não existe um número universal. Ter três workers limita o trabalho nessa etapa a três tarefas em andamento, mas buffers e etapas anteriores ainda podem acumular itens.
 

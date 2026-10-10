@@ -66,6 +66,8 @@ O índice também pode ser recolhido para dar mais espaço ao conteúdo. A abert
 
 O arquivo `APOO/Aula8/DDD.md` vira `/notes/APOO/Aula8/DDD/`. Espaços e acentos são preservados e codificados nos links automaticamente. Maiúsculas e minúsculas importam: renomear arquivos ou pastas muda os endereços publicados.
 
+Na pasta `go/`, as notas usam prefixos numéricos nos arquivos e nos títulos para indicar a [ordem de leitura](../README.md#ordem-de-leitura-das-notas-de-go). O menu ordena pelos títulos; quando houver a propriedade `title`, coloque o número nela também. Essa numeração é uma convenção dessas notas, e outras pastas podem continuar sem números ou propriedades. Ao renomear uma nota, atualize também os links que apontam para ela.
+
 Em telas menores, o índice aparece acima da nota; no celular, o explorador também vai para cima do conteúdo. Ambos podem ser recolhidos pelos seus títulos. O tema é escuro por padrão.
 
 ## Notas sem configuração

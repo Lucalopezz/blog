@@ -1,5 +1,5 @@
 ---
-title: Concorrência e paralelismo em Go
+title: "02. Concorrência e paralelismo em Go"
 description: Entenda a diferença com exemplos de operações de espera e de trabalho de CPU.
 category: Go
 tags: [go, concorrencia, paralelismo, performance]
@@ -97,7 +97,7 @@ func main() {
 
 Execute com `go run main.go`. `GOMAXPROCS` informa quantas goroutines podem executar código Go simultaneamente, conforme a configuração do processo. Ter duas goroutines **permite** paralelismo; não garante ganho: divisão desigual, custo de coordenação e quantidade de CPUs afetam o resultado. Compare versões sequencial e concorrente com benchmarks antes de otimizar.
 
-Concorrência introduz coordenação e possíveis races. Use-a quando houver tarefas independentes e um ganho claro de organização ou desempenho. Veja [[goroutines|goroutines]], [[channels|channels]] e [[race-condition-mutex-sync-map|sincronização]].
+Concorrência introduz coordenação e possíveis races. Use-a quando houver tarefas independentes e um ganho claro de organização ou desempenho. Veja [[03-goroutines|goroutines]], [[04-channels|channels]] e [[05-race-condition-mutex-sync-map|sincronização]].
 
 ## Para continuar
 
