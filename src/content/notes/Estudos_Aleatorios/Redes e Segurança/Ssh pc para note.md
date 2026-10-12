@@ -26,6 +26,8 @@ PC Fedora                         Notebook Fedora
 192.168.0.2  ←────── SSH ──────→ 192.168.0.3
 ````
 
+Nos comandos e configurações abaixo, `joaoaugusto` é um nome de usuário fictício. Substitua pelo usuário da máquina de destino.
+
 Requisitos definidos:
 
 * SSH funcionando nos dois sentidos;
@@ -324,7 +326,7 @@ Antes de configurar aliases, testamos diretamente pelos IPs.
 Do PC para o notebook:
 
 ```bash
-ssh lucaslopes@192.168.0.18
+ssh joaoaugusto@192.168.0.18
 ```
 
 Posteriormente o IP do notebook foi alterado.
@@ -332,7 +334,7 @@ Posteriormente o IP do notebook foi alterado.
 Do notebook para o PC:
 
 ```bash
-ssh lucaslopes@192.168.0.10
+ssh joaoaugusto@192.168.0.10
 ```
 
 Na primeira conexão aparece algo semelhante a:
@@ -390,13 +392,13 @@ id_ed25519.pub
 Exemplo PC → Notebook:
 
 ```bash
-ssh-copy-id -i ~/.ssh/id_ed25519.pub lucaslopes@IP_DO_NOTEBOOK
+ssh-copy-id -i ~/.ssh/id_ed25519.pub joaoaugusto@IP_DO_NOTEBOOK
 ```
 
 No outro sentido:
 
 ```bash
-ssh-copy-id -i ~/.ssh/id_ed25519.pub lucaslopes@IP_DO_PC
+ssh-copy-id -i ~/.ssh/id_ed25519.pub joaoaugusto@IP_DO_PC
 ```
 
 O `ssh-copy-id` adiciona a chave pública em:
@@ -414,13 +416,13 @@ na máquina remota.
 PC → notebook:
 
 ```bash
-ssh lucaslopes@IP_DO_NOTEBOOK
+ssh joaoaugusto@IP_DO_NOTEBOOK
 ```
 
 Notebook → PC:
 
 ```bash
-ssh lucaslopes@IP_DO_PC
+ssh joaoaugusto@IP_DO_PC
 ```
 
 Depois que ambos funcionaram por chave, foi possível desativar autenticação por senha.
@@ -986,7 +988,7 @@ Adicionar:
 ```sshconfig
 Host note
     HostName 192.168.0.3
-    User lucaslopes
+    User joaoaugusto
     IdentityFile ~/.ssh/id_ed25519
     IdentitiesOnly yes
 ```
@@ -1006,7 +1008,7 @@ ssh note
 é equivalente a:
 
 ```bash
-ssh -i ~/.ssh/id_ed25519 lucaslopes@192.168.0.3
+ssh -i ~/.ssh/id_ed25519 joaoaugusto@192.168.0.3
 ```
 
 ---
@@ -1024,7 +1026,7 @@ Adicionar:
 ```sshconfig
 Host pc
     HostName 192.168.0.2
-    User lucaslopes
+    User joaoaugusto
     IdentityFile ~/.ssh/id_ed25519
     IdentitiesOnly yes
 ```
@@ -1044,7 +1046,7 @@ ssh pc
 é equivalente a:
 
 ```bash
-ssh -i ~/.ssh/id_ed25519 lucaslopes@192.168.0.2
+ssh -i ~/.ssh/id_ed25519 joaoaugusto@192.168.0.2
 ```
 
 ---

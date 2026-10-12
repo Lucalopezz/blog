@@ -417,9 +417,9 @@ WHERE id = 1;
 gera automaticamente algo parecido com:
 
 ```text
-id_atleta | sal_antigo | sal_novo | usuario | data
----------------------------------------------------
-1          | 9000       | 10000    | LUCAS   | ...
+id_atleta | sal_antigo | sal_novo | usuario     | data
+-------------------------------------------------------
+1          | 9000       | 10000    | JOAOAUGUSTO | ...
 ```
 
 ---

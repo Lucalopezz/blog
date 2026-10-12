@@ -94,7 +94,7 @@ INSERT INTO atleta (
 )
 VALUES (
     1,
-    'Lucas',
+    'João Augusto',
     10000
 );
 ```
@@ -115,7 +115,7 @@ INSERT INTO atleta (
 )
 VALUES (
     1,
-    'Lucas',
+    'João Augusto',
     TO_DATE('12/08/2000', 'DD/MM/YYYY')
 );
 ```
@@ -127,7 +127,7 @@ VALUES (
 ```sql
 UPDATE atleta
 SET id_clube = 10
-WHERE nome = 'Lucas';
+WHERE nome = 'João Augusto';
 ```
 
 ### DELETE
@@ -381,7 +381,7 @@ Exemplo:
 
 ```sql
 INSERT INTO atleta (id, nome)
-VALUES (atleta_seq.NEXTVAL, 'Lucas');
+VALUES (atleta_seq.NEXTVAL, 'João Augusto');
 ```
 
 ### CURRVAL

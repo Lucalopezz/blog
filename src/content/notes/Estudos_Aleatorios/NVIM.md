@@ -147,10 +147,10 @@ alterar      dentro    das aspas duplas
 
 ### Aspas: `ci"`, `ca"` e `di"`
 
-Com o cursor em algum caractere de `Lucas Lopes`:
+Com o cursor em algum caractere de `João Augusto`:
 
 ```js
-const name = "Lucas Lopes";
+const name = "João Augusto";
 ```
 
 Digite `ci"`. O conteúdo é removido, as aspas permanecem e você entra em **Insert**:
@@ -165,9 +165,9 @@ Compare as três operações, partindo sempre do exemplo original:
 
 | Comando | Trecho removido | Modo após a operação |
 | --- | --- | --- |
-| `ci"` | Apenas `Lucas Lopes` | Insert, para digitar a substituição. |
-| `di"` | Apenas `Lucas Lopes` | Normal. |
-| `ca"` | `"Lucas Lopes"`, incluindo os delimitadores | Insert. |
+| `ci"` | Apenas `João Augusto` | Insert, para digitar a substituição. |
+| `di"` | Apenas `João Augusto` | Normal. |
+| `ca"` | `"João Augusto"`, incluindo os delimitadores | Insert. |
 
 `ca"` também pode consumir espaços adjacentes conforme as regras do objeto `a"`. A ideia principal é que as aspas deixam de fazer parte do texto. A linha pode ficar temporariamente com sintaxe incompleta enquanto você digita a substituição.
 
@@ -290,10 +290,10 @@ Não encontrar um mapeamento em `nmap` não descarta um objeto definido por plug
 
 As versões minúsculas distinguem palavras e pontuação conforme as regras do editor. As maiúsculas tratam uma sequência sem espaços como um bloco maior. Em `user.name`, por exemplo, `W` pode saltar o conjunto de uma vez, enquanto `w` percorre suas partes.
 
-Compare, com o cursor no `L` de `Lopes`:
+Compare, com o cursor no `A` de `Augusto`:
 
 ```text
-Lucas Lopes
+João Augusto
 ```
 
 - `de` apaga do cursor até o fim da palavra, incluindo o último caractere.

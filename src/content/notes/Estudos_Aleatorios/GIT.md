@@ -895,8 +895,8 @@ git remote -v
 Exemplo:
 
 ```text
-origin  git@github.com:lucas/projeto.git (fetch)
-origin  git@github.com:lucas/projeto.git (push)
+origin  git@github.com:joaoaugusto/projeto.git (fetch)
+origin  git@github.com:joaoaugusto/projeto.git (push)
 ```
 
 ---
@@ -975,14 +975,14 @@ Professor/projeto
 Você faz fork:
 
 ```text
-Lucas/projeto
+joaoaugusto/projeto
 ```
 
 Seu repositório:
 
 ```text
 origin
-→ Lucas/projeto
+→ joaoaugusto/projeto
 ```
 
 Projeto original:

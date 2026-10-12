@@ -227,11 +227,11 @@ Exemplo:
 ```text
 Cliente A
 id = 123
-nome = Lucas
+nome = João Augusto
 
 Cliente B
 id = 456
-nome = Lucas
+nome = João Augusto
 ```
 
 Mesmo possuindo o mesmo nome, são clientes diferentes.
@@ -1388,7 +1388,7 @@ Se o sistema externo possui:
 
 ```json
 {
-    "usr_nm": "Lucas",
+    "usr_nm": "João Augusto",
     "usr_mail": "x@x.com"
 }
 ```
