@@ -256,7 +256,7 @@ stateDiagram-v2
 
 #### Resolução da parte (b): padrão State em Java
 
-No código abaixo, `Mario` é o **contexto** e guarda pontuação e estado atual. `EstadoMario` é o contrato dos eventos. `Pequeno`, `Grande`, `Fogo`, `Capa` e `Morto` são os estados concretos. Cada método implementa exatamente a célula correspondente da tabela do slide 20. `Morto` encerra a simulação; receber eventos após o fim gera erro.
+No código abaixo, `Mario` é o **contexto** e guarda pontuação e estado atual. `EstadoMario` é a **interface**, implementada diretamente por `Pequeno`, `Grande`, `Fogo`, `Capa` e `Morto`, como `HandState` no exemplo do Truco. Cada método implementa a célula correspondente da tabela do slide 20. `Morto` encerra a simulação; receber eventos após o fim gera erro.
 
 Salve como `MarioBrosState.java`. O exemplo usa Java 17 ou mais recente, sem bibliotecas externas, e pode ser executado com `javac MarioBrosState.java && java MarioBrosState`.
 
@@ -289,33 +289,24 @@ public class MarioBrosState {
         int pontos() { return pontos; }
     }
 
-    // Estado abstrato: só o estado terminal usa as respostas inválidas padrão.
-    static abstract class EstadoBase implements EstadoMario {
-        protected final Mario mario;
+    // Cada estado concreto implementa diretamente a interface EstadoMario.
+    // Pequeno: os itens mudam a habilidade; dano encerra a partida.
+    static class Pequeno implements EstadoMario {
+        private final Mario mario;
 
-        EstadoBase(Mario mario) { this.mario = mario; }
-
-        private IllegalStateException partidaEncerrada() {
-            return new IllegalStateException("Mario já morreu; partida encerrada.");
-        }
-
-        public void cogumelo() { throw partidaEncerrada(); }
-        public void flor() { throw partidaEncerrada(); }
-        public void pena() { throw partidaEncerrada(); }
-        public void dano() { throw partidaEncerrada(); }
-    }
-
-    static class Pequeno extends EstadoBase {
-        Pequeno(Mario mario) { super(mario); }
+        Pequeno(Mario mario) { this.mario = mario; }
 
         public void cogumelo() { mario.mudarPara(new Grande(mario)); }
         public void flor() { mario.mudarPara(new Fogo(mario)); }
         public void pena() { mario.mudarPara(new Capa(mario)); }
-        public void dano() { mario.mudarPara(new Morto(mario)); }
+        public void dano() { mario.mudarPara(new Morto()); }
     }
 
-    static class Grande extends EstadoBase {
-        Grande(Mario mario) { super(mario); }
+    // Grande: dano volta para Pequeno, mas um cogumelo extra só pontua.
+    static class Grande implements EstadoMario {
+        private final Mario mario;
+
+        Grande(Mario mario) { this.mario = mario; }
 
         // Cogumelo repetido soma pontos sem trocar de estado.
         public void cogumelo() { mario.ganharMilPontos(); }
@@ -324,8 +315,11 @@ public class MarioBrosState {
         public void dano() { mario.mudarPara(new Pequeno(mario)); }
     }
 
-    static class Fogo extends EstadoBase {
-        Fogo(Mario mario) { super(mario); }
+    // Fogo: cogumelo ou flor repetidos pontuam sem mudar a habilidade.
+    static class Fogo implements EstadoMario {
+        private final Mario mario;
+
+        Fogo(Mario mario) { this.mario = mario; }
 
         public void cogumelo() { mario.ganharMilPontos(); }
         public void flor() { mario.ganharMilPontos(); }
@@ -333,8 +327,11 @@ public class MarioBrosState {
         public void dano() { mario.mudarPara(new Grande(mario)); }
     }
 
-    static class Capa extends EstadoBase {
-        Capa(Mario mario) { super(mario); }
+    // Capa: pena ou cogumelo pontuam; flor troca a habilidade para Fogo.
+    static class Capa implements EstadoMario {
+        private final Mario mario;
+
+        Capa(Mario mario) { this.mario = mario; }
 
         public void cogumelo() { mario.ganharMilPontos(); }
         public void flor() { mario.mudarPara(new Fogo(mario)); }
@@ -342,9 +339,17 @@ public class MarioBrosState {
         public void dano() { mario.mudarPara(new Grande(mario)); }
     }
 
-    static class Morto extends EstadoBase {
-        Morto(Mario mario) { super(mario); }
-        // Nenhuma transição sai de Morto no diagrama deste exercício.
+    static class Morto implements EstadoMario {
+        // Não guarda o contexto: a partida terminou e não há transições de saída.
+        private IllegalStateException partidaEncerrada() {
+            return new IllegalStateException("Mario já morreu; partida encerrada.");
+        }
+
+        // A interface exige os quatro eventos; todos são inválidos após a morte.
+        public void cogumelo() { throw partidaEncerrada(); }
+        public void flor() { throw partidaEncerrada(); }
+        public void pena() { throw partidaEncerrada(); }
+        public void dano() { throw partidaEncerrada(); }
     }
 
     public static void main(String[] args) throws InterruptedException {
