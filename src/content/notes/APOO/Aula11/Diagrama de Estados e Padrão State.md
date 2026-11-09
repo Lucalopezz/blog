@@ -254,21 +254,169 @@ stateDiagram-v2
     Morto --> [*]
 ```
 
-Para a parte (b), uma possibilidade é usar `Mario` como **contexto**, uma interface `MarioState` com eventos `cogumelo()`, `flor()`, `pena()` e `dano()`, e classes `Pequeno`, `Grande`, `Fogo` e `Capa`. O contexto guarda a pontuação; cada estado decide se troca o estado, soma mil pontos ou encerra a partida. A simulação sorteia um evento, chama o método correspondente e espera um intervalo com `Thread.sleep(...)`. **Dormir a thread controla o ritmo da simulação; não é parte do padrão State.**
+#### Resolução da parte (b): padrão State em Java
+
+No código abaixo, `Mario` é o **contexto** e guarda pontuação e estado atual. `EstadoMario` é o contrato dos eventos. `Pequeno`, `Grande`, `Fogo`, `Capa` e `Morto` são os estados concretos. Cada método implementa exatamente a célula correspondente da tabela do slide 20. `Morto` encerra a simulação; receber eventos após o fim gera erro.
+
+Salve como `MarioBrosState.java`. O exemplo usa Java 17 ou mais recente, sem bibliotecas externas, e pode ser executado com `javac MarioBrosState.java && java MarioBrosState`.
+
+```java
+import java.util.Random;
+
+public class MarioBrosState {
+    // O contrato agrupa os eventos que qualquer estado precisa tratar.
+    interface EstadoMario {
+        void cogumelo();
+        void flor();
+        void pena();
+        void dano();
+    }
+
+    // Contexto: o cliente chama Mario, que delega ao estado atual.
+    static class Mario {
+        private EstadoMario estado = new Pequeno(this);
+        private int pontos;
+
+        void cogumelo() { estado.cogumelo(); }
+        void flor() { estado.flor(); }
+        void pena() { estado.pena(); }
+        void dano() { estado.dano(); }
+
+        void mudarPara(EstadoMario proximo) { estado = proximo; }
+        void ganharMilPontos() { pontos += 1000; }
+        boolean morreu() { return estado instanceof Morto; }
+        String estadoAtual() { return estado.getClass().getSimpleName(); }
+        int pontos() { return pontos; }
+    }
+
+    // Estado abstrato: só o estado terminal usa as respostas inválidas padrão.
+    static abstract class EstadoBase implements EstadoMario {
+        protected final Mario mario;
+
+        EstadoBase(Mario mario) { this.mario = mario; }
+
+        private IllegalStateException partidaEncerrada() {
+            return new IllegalStateException("Mario já morreu; partida encerrada.");
+        }
+
+        public void cogumelo() { throw partidaEncerrada(); }
+        public void flor() { throw partidaEncerrada(); }
+        public void pena() { throw partidaEncerrada(); }
+        public void dano() { throw partidaEncerrada(); }
+    }
+
+    static class Pequeno extends EstadoBase {
+        Pequeno(Mario mario) { super(mario); }
+
+        public void cogumelo() { mario.mudarPara(new Grande(mario)); }
+        public void flor() { mario.mudarPara(new Fogo(mario)); }
+        public void pena() { mario.mudarPara(new Capa(mario)); }
+        public void dano() { mario.mudarPara(new Morto(mario)); }
+    }
+
+    static class Grande extends EstadoBase {
+        Grande(Mario mario) { super(mario); }
+
+        // Cogumelo repetido soma pontos sem trocar de estado.
+        public void cogumelo() { mario.ganharMilPontos(); }
+        public void flor() { mario.mudarPara(new Fogo(mario)); }
+        public void pena() { mario.mudarPara(new Capa(mario)); }
+        public void dano() { mario.mudarPara(new Pequeno(mario)); }
+    }
+
+    static class Fogo extends EstadoBase {
+        Fogo(Mario mario) { super(mario); }
+
+        public void cogumelo() { mario.ganharMilPontos(); }
+        public void flor() { mario.ganharMilPontos(); }
+        public void pena() { mario.mudarPara(new Capa(mario)); }
+        public void dano() { mario.mudarPara(new Grande(mario)); }
+    }
+
+    static class Capa extends EstadoBase {
+        Capa(Mario mario) { super(mario); }
+
+        public void cogumelo() { mario.ganharMilPontos(); }
+        public void flor() { mario.mudarPara(new Fogo(mario)); }
+        public void pena() { mario.ganharMilPontos(); }
+        public void dano() { mario.mudarPara(new Grande(mario)); }
+    }
+
+    static class Morto extends EstadoBase {
+        Morto(Mario mario) { super(mario); }
+        // Nenhuma transição sai de Morto no diagrama deste exercício.
+    }
+
+    public static void main(String[] args) throws InterruptedException {
+        Mario mario = new Mario();
+        Random aleatorio = new Random();
+        String[] nomes = {"Cogumelo", "Flor", "Pena", "Dano"};
+
+        System.out.println("Início: " + mario.estadoAtual());
+        while (!mario.morreu()) {
+            int evento = aleatorio.nextInt(nomes.length);
+
+            // O sorteio só escolhe o evento; o estado decide seu efeito.
+            switch (evento) {
+                case 0 -> mario.cogumelo();
+                case 1 -> mario.flor();
+                case 2 -> mario.pena();
+                case 3 -> mario.dano();
+                default -> throw new AssertionError("Evento impossível");
+            }
+
+            System.out.printf("%s -> %s (%d pontos)%n",
+                    nomes[evento], mario.estadoAtual(), mario.pontos());
+
+            // Apenas dá ritmo à demonstração; não faz parte do padrão State.
+            if (!mario.morreu()) Thread.sleep(300);
+        }
+    }
+}
+```
+
+Por exemplo, se o sorteio produzir **Cogumelo, Flor, Flor, Dano, Dano, Dano**, a sequência será `Pequeno → Grande → Fogo → Fogo → Grande → Pequeno → Morto`, com **1000 pontos** pela segunda flor. O resultado de cada execução varia porque os eventos são aleatórios. A simulação termina somente quando Mario morre; em teoria, uma sequência aleatória pode demorar bastante até chegar a esse estado.
 
 ### Exercício II: jogo de dados (slides 21 e 22)
 
 O enunciado do ENADE 2011 pede um diagrama para um jogo de **cinco lançamentos** com dois dados. Um lançamento é vencido quando a soma é **7 ou 11**; a partida é vencida pela maioria dos lançamentos. `JOGAR` inicia a partida e fica desabilitado; `LANÇAR` inicia o lançamento; `PARAR` encerra o jogo a qualquer momento e reabilita `JOGAR`.
 
-**Roteiro de modelagem criado para a nota:**
+#### Resolução: diagrama de estados do jogo
 
-1. Marque um estado inicial como `AguardandoJogo` e um estado ativo como `DadosGirando`.
-2. Ao receber `LANÇAR`, modele a desaceleração e a parada dos dados; só depois avalie a soma das faces.
-3. Registre o resultado do lançamento, toque o alerta e mostre quantos lançamentos restam.
-4. Se ainda houver lançamentos, espere o próximo `LANÇAR`. Após o quinto, decida o vencedor pela maioria.
-5. Permita `PARAR` dos estados ativos e volte a `AguardandoJogo`, reabilitando `JOGAR`.
+Esta é **uma solução criada para a nota**, baseada nos eventos e regras dos slides 21 e 22. `AguardandoJogo` significa que `JOGAR` está disponível. `DadosGirando` representa a animação logo após iniciar a partida. `LancamentoEmCurso` cobre a desaceleração até os dados pararem. `MostrandoResultado` mantém o resultado na tela até outro `LANÇAR` ou até a conclusão da partida.
 
-O diagrama pode usar guardas como `[soma == 7 || soma == 11]` e `[lancamentosRestantes == 0]`. **Resultado de um lançamento** e **resultado da partida** são coisas diferentes: um único lançamento perdido não encerra automaticamente o jogo.
+```mermaid
+stateDiagram-v2
+    [*] --> AguardandoJogo
+    AguardandoJogo --> DadosGirando: JOGAR / zerar contadores, desabilitar JOGAR, girar dados
+    DadosGirando --> LancamentoEmCurso: LANCAR / desacelerar dados
+    LancamentoEmCurso --> MostrandoResultado: dados pararam / avaliar soma, registrar, exibir, tocar alerta
+    MostrandoResultado --> LancamentoEmCurso: LANCAR [restam lançamentos] / girar e desacelerar dados
+    MostrandoResultado --> AguardandoJogo: [foram 5 lançamentos] / anunciar partida e habilitar JOGAR
+    DadosGirando --> AguardandoJogo: PARAR / habilitar JOGAR
+    LancamentoEmCurso --> AguardandoJogo: PARAR / habilitar JOGAR
+    MostrandoResultado --> AguardandoJogo: PARAR / habilitar JOGAR
+```
+
+**Regras executadas ao entrar em `MostrandoResultado`:**
+
+```text
+soma = dado1 + dado2
+lancamentosFeitos += 1
+se soma == 7 ou soma == 11:
+    vitorias += 1
+    mostrar "VENCEU" para este lançamento
+senão:
+    mostrar "PERDEU" para este lançamento
+mostrar 5 - lancamentosFeitos como lançamentos restantes
+tocar sinal sonoro
+
+após o quinto lançamento:
+    se vitorias >= 3: anunciar vitória da partida
+    senão: anunciar derrota da partida
+```
+
+O jogador faz **cinco lançamentos**, mesmo que alcance três vitórias antes do quinto. A guarda `[restam lançamentos]` significa `lancamentosFeitos < 5`; o fim usa `lancamentosFeitos == 5`. O enunciado não descreve a tela após a quinta jogada. Nesta solução, o jogo anuncia o resultado da partida e reabilita `JOGAR`, preservando a possibilidade de iniciar outra partida. `PARAR` cancela a partida em qualquer estado ativo e também reabilita `JOGAR`. **“VENCEU” ou “PERDEU” em cada jogada é o resultado do lançamento, não o placar final da partida.**
 
 ## 8. Resumo para revisão
 
