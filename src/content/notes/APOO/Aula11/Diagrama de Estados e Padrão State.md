@@ -38,6 +38,10 @@ Uma **máquina de estados finita** (MEF) possui um conjunto finito de estados e 
 | **Estado final** | Término do ciclo; desenhado como círculo com borda e centro preenchido. | `Enviado` → fim |
 | **Pseudoestado de decisão** | Ramificação representada por um losango. | Escolher caminho conforme uma guarda |
 
+![[Slide 05 - Elementos do diagrama.png|900]]
+
+*Slide 5: símbolos de estado, início, decisão e fim, além de ações de entrada, permanência e saída. É o diagrama mostrado na segunda imagem enviada para esta correção.*
+
 ### Como ler uma seta
 
 A forma apresentada no slide 6 é **`evento [condição] / comportamento`**. Os elementos após o evento podem ser omitidos quando não se aplicam.
@@ -50,7 +54,7 @@ Isso significa: quando `confirmarPagamento()` ocorre **enquanto o objeto está e
 
 ![[Slide 06 - Transicoes no Truco.png|750]]
 
-*Slide 6: diagrama de uma mão de Truco, usado na aula para apontar eventos, guardas, ações e transições. No PDF original, algumas letras do desenho se sobrepõem; a notação acima registra os conceitos em texto pesquisável.*
+*Slide 6: diagrama de uma mão de Truco, usado na aula para apontar eventos, guardas, ações e transições.*
 
 ### Ações de estado e ações de transição
 
