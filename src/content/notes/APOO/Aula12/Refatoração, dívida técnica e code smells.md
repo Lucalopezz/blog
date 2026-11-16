@@ -122,29 +122,45 @@ Um valor simples pode precisar de um objeto próprio quando há regras associada
 
 **Pull Up Method** coloca uma implementação realmente comum na superclasse. **Extract Interface** destaca um contrato compartilhado. **Collapse Hierarchy** remove uma divisão que já não traz benefício. Herança e delegação têm custos diferentes; a escolha depende da relação entre os objetos e de como as variantes mudam. O slide repete `Pull Up Constructor Body` em duas células; trata-se de um único nome de refatoração.
 
-## 6. Exemplos próprios em Java: antes e depois
+## 6. Code smells e refatorações em Java: antes e depois
 
-Os exemplos abaixo foram criados para estudar as técnicas. São **fragmentos didáticos**; os tipos auxiliares foram omitidos para destacar a transformação. Em cada par, a intenção é manter o mesmo resultado para as mesmas entradas.
+Os exemplos a seguir são **originais e didáticos**, inspirados nas relações entre problema e técnica apresentadas nos slides e no [catálogo de smells do Refactoring.Guru](https://refactoring.guru/refactoring/smells). Usam recursos do **Java 17 ou mais recente**, como `record` e expressões `switch`. Cada par mostra o mesmo comportamento para as entradas citadas; algumas classes auxiliares e importações foram omitidas. Os valores de locação são inventados e **não representam os preços do exercício da aula**. Ao aplicar a técnica em um projeto real, é preciso conferir todos os chamadores e executar os testes após cada passo.
 
-### Extract Method para um cálculo difícil de ler
+| Família do slide | Sinal no código | Refatoração ilustrada abaixo |
+| --- | --- | --- |
+| Bloaters | Método com etapas misturadas; parâmetros que sempre aparecem juntos. | `Extract Method`; `Introduce Parameter Object` |
+| Object-orientation Abusers | Vários `switch` sobre a mesma categoria. | `Replace Conditional with Polymorphism` |
+| Change Preventers | Uma regra espalhada exige editar várias classes. | Concentrar a regra em uma classe e mover os chamadores |
+| Dispensables | Mesmo trecho copiado em dois métodos. | `Extract Method` |
+| Couplers | Método depende dos dados de outro objeto; cadeia de getters. | `Move Method`; `Hide Delegate` |
 
-**Antes:** uma operação mistura a escolha do valor diário com o cálculo final.
+### 6.1 `Long Method` → `Extract Method`
+
+**Problema:** o método calcula a diária, multiplica pelos dias e monta o texto. Quando a regra de preço cresce, fica difícil localizar cada responsabilidade. O [catálogo de `Long Method`](https://refactoring.guru/smells/long-method) sugere extrair blocos com uma intenção clara.
+
+**Antes:**
 
 ```java
-double total(Categoria categoria, int dias) {
+String resumo(Categoria categoria, int dias) {
     double diaria;
-    if (categoria == Categoria.LANCAMENTO) diaria = 30;
-    else if (categoria == Categoria.REMANUFATURADA) diaria = 12;
-    else diaria = 20;
-    return diaria * dias;
+    if (categoria == Categoria.LANCAMENTO) {
+        diaria = 30;
+    } else if (categoria == Categoria.REMANUFATURADA) {
+        diaria = 12;
+    } else {
+        diaria = 20;
+    }
+    double total = diaria * dias;
+    return "Diária: " + diaria + "; total: " + total;
 }
 ```
 
-**Depois:** a regra da diária ganha um nome; para cada categoria e quantidade de dias, `total` devolve o mesmo valor.
+**Depois:** `resumo` descreve o fluxo, e `diariaDa` concentra a escolha do preço.
 
 ```java
-double total(Categoria categoria, int dias) {
-    return diariaDa(categoria) * dias;
+String resumo(Categoria categoria, int dias) {
+    double diaria = diariaDa(categoria);
+    return "Diária: " + diaria + "; total: " + (diaria * dias);
 }
 
 private double diariaDa(Categoria categoria) {
@@ -154,33 +170,231 @@ private double diariaDa(Categoria categoria) {
 }
 ```
 
-O `switch`/`if` por categoria **ainda existe**. Esta etapa reorganiza o método; substituir condicionais por polimorfismo seria outra decisão, a avaliar e testar separadamente. Os números são apenas dados inventados para o exemplo, não preços do exercício da aula.
+**Confira:** `resumo(LANCAMENTO, 2)` continua produzindo `Diária: 30.0; total: 60.0`. A condição por categoria ainda existe: extrair o método é **um passo**, não a solução automática para todo `switch`. Fonte da técnica: [Extract Method](https://refactoring.guru/extract-method).
 
-### Introduce Parameter Object para dados que andam juntos
+### 6.2 `Data Clumps` e `Long Parameter List` → `Introduce Parameter Object`
 
-**Antes:** várias operações internas recebem as mesmas partes de um período:
+**Problema:** `rua`, `numero`, `cidade` e `uf` viajam juntos entre métodos. Repetir essa lista aumenta a chance de trocar argumentos de mesma forma e dificulta adicionar uma informação ao endereço. O [catálogo de `Data Clumps`](https://refactoring.guru/smells/data-clumps) propõe um objeto quando o grupo tem significado próprio.
+
+**Antes:**
 
 ```java
-int dias(LocalDate inicio, LocalDate fim) {
-    return (int) ChronoUnit.DAYS.between(inicio, fim);
+String etiqueta(String rua, int numero, String cidade, String uf) {
+    return rua + ", " + numero + " - " + cidade + "/" + uf;
+}
+
+boolean entregaLocal(String rua, int numero, String cidade, String uf) {
+    return cidade.equals("São Carlos") && uf.equals("SP");
 }
 ```
 
-**Depois:** um tipo representa o período e mantém o cálculo:
+**Depois:** os métodos recebem um `Endereco` imutável. Nenhuma validação nova foi adicionada ao `record`, pois isso mudaria o comportamento desta etapa.
 
 ```java
-record Periodo(LocalDate inicio, LocalDate fim) {
-    int dias() {
-        return (int) ChronoUnit.DAYS.between(inicio, fim);
+record Endereco(String rua, int numero, String cidade, String uf) {}
+
+String etiqueta(Endereco endereco) {
+    return endereco.rua() + ", " + endereco.numero()
+        + " - " + endereco.cidade() + "/" + endereco.uf();
+}
+
+boolean entregaLocal(Endereco endereco) {
+    return endereco.cidade().equals("São Carlos")
+        && endereco.uf().equals("SP");
+}
+```
+
+**Confira:** para `new Endereco("Rua A", 10, "São Carlos", "SP")`, a etiqueta continua `Rua A, 10 - São Carlos/SP` e `entregaLocal` continua `true`. A assinatura mudou; os chamadores devem passar o novo objeto, ou uma API pública deve manter um adaptador temporário. Fonte da técnica: [Introduce Parameter Object](https://refactoring.guru/introduce-parameter-object).
+
+### 6.3 `Switch Statements` → `Replace Conditional with Polymorphism`
+
+**Problema:** a mesma decisão sobre `Categoria` aparece em mais de uma operação. Adicionar uma categoria exigiria localizar todos os `switch`. Isso é o sinal descrito em [`Switch Statements`](https://refactoring.guru/smells/switch-statements), especialmente quando as variantes têm comportamentos distintos.
+
+**Antes:**
+
+```java
+enum Categoria { PADRAO, LANCAMENTO, REMANUFATURADA }
+
+double diaria(Categoria categoria) {
+    return switch (categoria) {
+        case PADRAO -> 20;
+        case LANCAMENTO -> 30;
+        case REMANUFATURADA -> 12;
+    };
+}
+
+double multaPorDia(Categoria categoria) {
+    return switch (categoria) {
+        case PADRAO -> 5;
+        case LANCAMENTO -> 8;
+        case REMANUFATURADA -> 3;
+    };
+}
+```
+
+**Depois:** cada constante implementa os dois comportamentos da sua categoria; os chamadores pedem a operação ao objeto.
+
+```java
+enum Categoria {
+    PADRAO {
+        double diaria() { return 20; }
+        double multaPorDia() { return 5; }
+    },
+    LANCAMENTO {
+        double diaria() { return 30; }
+        double multaPorDia() { return 8; }
+    },
+    REMANUFATURADA {
+        double diaria() { return 12; }
+        double multaPorDia() { return 3; }
+    };
+
+    abstract double diaria();
+    abstract double multaPorDia();
+}
+
+double total(Categoria categoria, int dias) {
+    return categoria.diaria() * dias;
+}
+```
+
+**Confira:** `total(LANCAMENTO, 2)` continua `60.0`, e a multa por dia continua `8.0`. Se existe só um `switch` simples, a troca pode acrescentar complexidade sem benefício. Para estados que mudam durante a execução, veja também a [[APOO/Aula11/Diagrama de Estados e Padrão State|aula de State]]. Fonte da técnica: [Replace Conditional with Polymorphism](https://refactoring.guru/replace-conditional-with-polymorphism).
+
+### 6.4 `Shotgun Surgery` → concentrar a regra que muda junto
+
+**Problema:** o mesmo desconto é calculado em várias classes. Alterar o percentual exige várias edições; esquecer uma faz checkout e relatório discordarem. O sinal de [`Shotgun Surgery`](https://refactoring.guru/smells/shotgun-surgery) é **uma única mudança de regra espalhada por várias classes**.
+
+**Antes:**
+
+```java
+class Checkout {
+    double total(double subtotal) { return subtotal * 0.90; }
+}
+
+class Relatorio {
+    double total(double subtotal) { return subtotal * 0.90; }
+}
+```
+
+**Depois:** uma classe é dona da regra e os dois pontos de uso a chamam.
+
+```java
+class PoliticaDesconto {
+    double aplicar(double subtotal) { return subtotal * 0.90; }
+}
+
+class Checkout {
+    private final PoliticaDesconto politica = new PoliticaDesconto();
+    double total(double subtotal) { return politica.aplicar(subtotal); }
+}
+
+class Relatorio {
+    private final PoliticaDesconto politica = new PoliticaDesconto();
+    double total(double subtotal) { return politica.aplicar(subtotal); }
+}
+```
+
+**Confira:** os dois métodos continuam devolvendo `90.0` para `100.0`. A próxima alteração na regra fica em `PoliticaDesconto`. Em código real, confirme primeiro que os dois percentuais representam **a mesma regra de negócio**, pois valores iguais por acaso não precisam ser unidos.
+
+### 6.5 `Duplicate Code` → `Extract Method`
+
+**Problema:** a mesma construção de texto foi copiada dentro de uma classe. Se o formato do identificador mudar, será preciso lembrar dos dois locais. Para duplicação dentro da mesma classe, o [Refactoring.Guru sugere `Extract Method`](https://refactoring.guru/smells/duplicate-code).
+
+**Antes:**
+
+```java
+String email(int id, String cliente) {
+    String cabecalho = "Pedido #" + id + " de " + cliente;
+    return cabecalho + " enviado por e-mail";
+}
+
+String sms(int id, String cliente) {
+    String cabecalho = "Pedido #" + id + " de " + cliente;
+    return cabecalho + " enviado por SMS";
+}
+```
+
+**Depois:** cada canal mantém sua parte específica e compartilha apenas o cabeçalho.
+
+```java
+String email(int id, String cliente) {
+    return cabecalho(id, cliente) + " enviado por e-mail";
+}
+
+String sms(int id, String cliente) {
+    return cabecalho(id, cliente) + " enviado por SMS";
+}
+
+private String cabecalho(int id, String cliente) {
+    return "Pedido #" + id + " de " + cliente;
+}
+```
+
+**Confira:** `email(7, "Ana")` ainda devolve `Pedido #7 de Ana enviado por e-mail`; `sms(7, "Ana")` continua terminando em `SMS`. Uma extração desse tipo preserva as partes que diferem.
+
+### 6.6 `Feature Envy` → `Move Method`
+
+**Problema:** `Relatorio` conhece os pontos do cliente e decide o desconto a partir deles, embora a decisão use apenas dados de `Cliente`. Esse é o caso típico de [`Feature Envy`](https://refactoring.guru/smells/feature-envy).
+
+**Antes:**
+
+```java
+class Relatorio {
+    double percentualDesconto(Cliente cliente) {
+        return cliente.pontos() >= 100 ? 0.10 : 0.0;
     }
 }
 ```
 
-O resultado continua igual se `inicio` e `fim` forem os mesmos. A criação de `Periodo` só se justifica quando esse conjunto aparece repetidamente e possui significado no domínio. Ajustar quem chama o método faz parte da mudança de assinatura.
+**Depois:** a decisão fica junto dos dados usados por ela.
 
-### Guard clauses para reduzir aninhamento
+```java
+class Cliente {
+    private final int pontos;
+
+    Cliente(int pontos) { this.pontos = pontos; }
+
+    double percentualDesconto() {
+        return pontos >= 100 ? 0.10 : 0.0;
+    }
+}
+
+class Relatorio {
+    double percentualDesconto(Cliente cliente) {
+        return cliente.percentualDesconto();
+    }
+}
+```
+
+**Confira:** clientes com `99` e `100` pontos continuam recebendo `0.0` e `0.10`, respectivamente. A delegação em `Relatorio` pode ser mantida enquanto houver chamadores do método antigo; depois, ela pode ser removida se não fizer mais falta. Fonte da técnica: [Move Method](https://refactoring.guru/move-method).
+
+### 6.7 `Message Chains` → `Hide Delegate`
+
+**Problema:** a camada que monta a etiqueta navega pelo cliente e pelo endereço para descobrir a cidade. Se essa estrutura interna mudar, muitos chamadores podem precisar de edição. Veja [`Message Chains`](https://refactoring.guru/smells/message-chains).
 
 **Antes:**
+
+```java
+String cidade = pedido.getCliente().getEndereco().getCidade();
+```
+
+**Depois:** `Pedido` oferece a informação relevante para esse uso.
+
+```java
+// No chamador:
+String cidade = pedido.cidadeDeEntrega();
+
+// Em Pedido:
+String cidadeDeEntrega() {
+    return cliente.getEndereco().getCidade();
+}
+```
+
+**Confira:** a cidade retornada é a mesma. Só adote `cidadeDeEntrega` se o endereço do cliente for, de fato, o endereço usado na entrega; o nome do método deve refletir a regra real. Fonte da técnica: [Hide Delegate](https://refactoring.guru/hide-delegate).
+
+### 6.8 Condicionais aninhadas → `Replace Nested Conditional with Guard Clauses`
+
+**Antes:** o caminho principal fica escondido dentro de dois `if`.
 
 ```java
 String status(Pedido pedido) {
@@ -196,7 +410,7 @@ String status(Pedido pedido) {
 }
 ```
 
-**Depois:** os casos especiais terminam cedo; as três saídas continuam iguais.
+**Depois:** os casos de saída antecipada aparecem primeiro.
 
 ```java
 String status(Pedido pedido) {
@@ -205,6 +419,8 @@ String status(Pedido pedido) {
     return "Pronto para envio";
 }
 ```
+
+**Confira:** `null`, pedido não pago e pedido pago continuam produzindo, nessa ordem, `Pedido ausente`, `Aguardando pagamento` e `Pronto para envio`. Essa técnica melhora a leitura sem criar classes novas. Fonte: [Replace Nested Conditional with Guard Clauses](https://refactoring.guru/replace-nested-conditional-with-guard-clauses).
 
 ## 7. Exercícios propostos nos slides
 
